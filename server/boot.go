@@ -22,7 +22,25 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	apiUserV1 := v1.Group("/apiUser")
 	apiAdminV1 := v1.Group("/apiAdmin")
 	apiAuthV1 := v1.Group("/apiAuth")
-	// apiStaticv1 := v1.Group("/apiStatic")
+	apiStaticv1 := v1.Group("/apiStatic")
+
+
+	apiUserV1.GET("/health", func(c echo.Context) error {
+		return c.JSON(200, "OK")
+	})
+
+	apiAdminV1.GET("/test", func(c echo.Context) error {
+		return c.JSON(200, "OK")
+	})
+
+	apiAuthV1.GET("/test", func(c echo.Context) error {
+		return c.JSON(200, "OK")
+	})
+
+	apiStaticv1.GET("/test", func(c echo.Context) error {
+		return c.JSON(200, "OK")
+	})
+
 
 	// v2 api group
 	// apiUserV2 := v2.Group("/apiUser")
