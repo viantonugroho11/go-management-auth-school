@@ -4,6 +4,8 @@ go 1.19
 
 require github.com/spf13/viper v1.15.0
 
+require github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+
 require (
 	cloud.google.com/go v0.105.0 // indirect
 	cloud.google.com/go/compute v1.14.0 // indirect
