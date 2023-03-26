@@ -4,6 +4,10 @@ import (
 	"go-management-auth-school/config"
 
 	"github.com/labstack/echo/v4"
+
+	studentController "go-management-auth-school/controller/student"
+	studentRepository "go-management-auth-school/repository/student"
+	studentService "go-management-auth-school/service/student"
 )
 
 
@@ -40,6 +44,20 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	apiStaticv1.GET("/test", func(c echo.Context) error {
 		return c.JSON(200, "OK")
 	})
+
+
+
+	studentRepo := studentRepository.NewStudentRepo(config.MasterDB, config.SlaveDB)
+
+	studentService := studentService.NewStudentService(studentRepo)
+
+	studentRouter := "/student"
+	studentUserRouter := apiUserV1.Group(studentRouter)
+	studentAdminRouter := apiAdminV1.Group(studentRouter)
+	studentStaticRouter := apiStaticv1.Group(studentRouter)
+	studentAuthRouter := apiAuthV1.Group(studentRouter)
+	studentController := studentController.NewStudentController(studentService)
+	studentController.InitializeRoutes(studentUserRouter, studentAdminRouter, studentStaticRouter, studentAuthRouter)
 
 
 	// v2 api group
