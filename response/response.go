@@ -2,10 +2,12 @@ package response
 
 import (
 	"encoding/json"
-	"io"
+	// "io"
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/labstack/echo/v4"
 )
 
 const (
@@ -22,7 +24,9 @@ type ApiResponseModel struct {
 	StatMsg   string      `json:"stat_msg,omitempty"`
 }
 
-func RespondSuccess(w http.ResponseWriter, statusCode int, data, meta interface{}) {
+
+
+func RespondSuccess(c echo.Context, statusCode int, data, meta interface{}) error {
 	bt, err := json.Marshal(ApiResponseModel{
 		Success: true,
 		Data:    data,
@@ -33,18 +37,18 @@ func RespondSuccess(w http.ResponseWriter, statusCode int, data, meta interface{
 			Success: false,
 			StatMsg: "",
 		})
-		w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(bt)
-		return
+		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		c.Response().Write(bt)
+		return c.JSON(http.StatusInternalServerError, bt)
 	}
-	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-	w.WriteHeader(statusCode)
-	w.Write(bt)
-	return
+	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+	c.Response().WriteHeader(statusCode)
+	c.Response().Write(bt)
+	return c.JSON(statusCode, bt)
 }
 
-func RespondError(w http.ResponseWriter, statusCode int, err error) {
+func RespondError(c echo.Context, statusCode int, err error) error {
 	bt, err := json.Marshal(ApiResponseModel{
 		Success: false,
 		Data:    nil,
@@ -55,18 +59,17 @@ func RespondError(w http.ResponseWriter, statusCode int, err error) {
 			Success: false,
 			StatMsg: "Internal Server Error"},
 		)
-		w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(bt)
-		return
+		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		c.Response().Write(bt)
+		return c.JSON(http.StatusInternalServerError, bt)
 	}
-	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-	w.WriteHeader(statusCode)
-	w.Write(bt)
-	return
+	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+	c.Response().WriteHeader(statusCode)
+	return c.JSON(statusCode, bt)
 }
 
-func RespondErrorWithMessage(w http.ResponseWriter, statusCode int, err error) {
+func RespondErrorWithMessage(c echo.Context, statusCode int, err error) error {
 	statMsg, exist := errMessageMaps[err]
 	if !exist {
 		statMsg = err.Error()
@@ -82,18 +85,17 @@ func RespondErrorWithMessage(w http.ResponseWriter, statusCode int, err error) {
 			Success: false,
 			StatMsg: "Internal Server Error"},
 		)
-		w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(bt)
-		return
+		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		c.Response().Write(bt)
+		return c.JSON(http.StatusInternalServerError, bt)
 	}
-	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-	w.WriteHeader(statusCode)
-	w.Write(bt)
-	return
+	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+	c.Response().WriteHeader(statusCode)
+	return c.JSON(statusCode, bt)
 }
 
-func RespondStatMsg(w http.ResponseWriter, statusCode int, errMessages string) {
+func RespondStatMsg(c echo.Context, statusCode int, errMessages string) error {
 	bt, err := json.Marshal(ApiResponseModel{
 		Success: false,
 		Data:    nil,
@@ -104,28 +106,27 @@ func RespondStatMsg(w http.ResponseWriter, statusCode int, errMessages string) {
 			Success: false,
 			StatMsg: "Internal Server Error",
 		})
-		w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(bt)
-		return
+		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		c.Response().Write(bt)
+		return c.JSON(http.StatusInternalServerError, bt)
 	}
-	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
-	w.WriteHeader(statusCode)
-	w.Write(bt)
+	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+	c.Response().WriteHeader(statusCode)
+	return c.JSON(statusCode, bt)
 }
 
 // SendFileSuccess send success file into response with 200 http code.
-func SendFileSuccess(w http.ResponseWriter, fileLocation, fileContentType string, unitTest bool) {
-	RespondWithFile(w, 200, fileLocation, fileContentType, unitTest)
+func SendFileSuccess(c echo.Context, fileLocation, fileContentType string, unitTest bool) {
+	RespondWithFile(c, 200, fileLocation, fileContentType, unitTest)
 }
 
 // RespondWithFile write file response format
-func RespondWithFile(w http.ResponseWriter, httpCode int, fileLocation, fileContentType string, unitTest bool) {
+func RespondWithFile(c echo.Context, httpCode int, fileLocation, fileContentType string, unitTest bool) error {
 	// Open result file
 	fileRes, err := os.OpenFile(fileLocation, os.O_RDWR, 0644)
 	if err != nil {
-		RespondError(w, http.StatusNotFound, err)
-		return
+		return RespondError(c, http.StatusNotFound, err)
 	}
 	fi, err := fileRes.Stat()
 	if err != nil {
@@ -135,22 +136,22 @@ func RespondWithFile(w http.ResponseWriter, httpCode int, fileLocation, fileCont
 			os.Remove(fileLocation)
 		}
 
-		RespondError(w, http.StatusNotFound, err)
-		return
+		return RespondError(c, http.StatusNotFound, err)
 	}
 
 	// copy the relevant headers. If you want to preserve the downloaded file name, extract it with go's url parser.
-	w.Header().Set("Content-Disposition", "attachment; filename="+fi.Name())
-	w.Header().Set(CONTENT_TYPE, fileContentType)
-	w.Header().Set("Content-Length", strconv.Itoa(int(fi.Size())))
+	c.Response().Header().Set("Content-Disposition", "attachment; filename="+fi.Name())
+	c.Response().Header().Set(CONTENT_TYPE, fileContentType)
+	c.Response().Header().Set("Content-Length", strconv.Itoa(int(fi.Size())))
 
 	// Stream the body to the client without fully loading it into memory
-	w.WriteHeader(httpCode)
-	io.Copy(w, fileRes)
+	c.Response().WriteHeader(httpCode)
+	// io.Copy(c.Response().Writer, fileRes)
 
 	// Delete temporary pdf file
 	fileRes.Close()
 	if !unitTest {
 		os.Remove(fileLocation)
 	}
+	return c.Stream(httpCode, fileContentType, fileRes)
 }

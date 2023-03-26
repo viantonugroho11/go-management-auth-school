@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"go-management-auth-school/response"
+	// "go-management-auth-school/response"
 	"log"
 	"net/http"
 	"runtime/debug"
@@ -15,7 +15,7 @@ func Recovery() func(nextHandler http.Handler) http.Handler {
 				err := recover()
 				if err != nil {
 					log.Fatalf("%s", debug.Stack())
-					response.RespondError(w, http.StatusInternalServerError, ErrUnknownError)
+					// response.RespondError(w, http.StatusInternalServerError, ErrUnknownError)
 					return
 				}
 			}()

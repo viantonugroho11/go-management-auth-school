@@ -1,12 +1,14 @@
 package student
 
 import (
-	"log"
 	"context"
+	"log"
+	"net/http"
 
 	// "go-management-auth-school/response"
 
 	studentEntity "go-management-auth-school/entity/student"
+	"go-management-auth-school/response"
 
 	"github.com/labstack/echo/v4"
 )
@@ -38,22 +40,20 @@ func (ctrl studentController) GetStudent() echo.HandlerFunc{
 		if ctx == nil {
 			ctx = context.Background()
 		}
-		// parameter := new(StudentParams)
-		// if err := c.Bind(parameter); err != nil {
-		// 	return c.JSON(http.StatusBadRequest, response.ErrorResponse(err.Error()))
-		// }
-		// if err := c.Validate(parameter); err != nil {
-		// 	return c.JSON(http.StatusBadRequest, response.ErrorResponse(err.Error()))
-		// }
-		// parameter.Offset, parameter.Limit, parameter.Page, parameter.OrderBy, parameter.Sort =
-		// 	services.SetPaginationParameter(parameter.Page, parameter.Limit, studentEntity.MapOrderBy[parameter.OrderBy], parameter.Sort, studentEntity.OrderBy, studentEntity.OrderByString)
-		// data, err := ctrl.studentServices.SelectAll(ctx, parameter)
-		// if err != nil {
-		// 	return c.JSON(http.StatusInternalServerError, response.ErrorResponse(err.Error()))
-		// }
-		// return c.JSON(http.StatusOK, response.SuccessResponse(data))
-		log.Println("test")
-		return nil
+		
+		params := new(StudentParams)
+		params.ID = c.QueryParam("id")
+		params.Nik = c.QueryParam("nik")
+		params.Nisn = c.QueryParam("nisn")
+		params.Nis = c.QueryParam("nis")
+		params.FirstName = c.QueryParam("first_name")
+		params.LastName = c.QueryParam("last_name")
+		log.Println(params)
+		data, err := ctrl.studentServices.SelectAll(ctx, params)
+		if err != nil {
+			return err
+		}
+		return response.RespondSuccess(c,http.StatusAlreadyReported, FromServices(data),nil)
 	}
 		
 } 
