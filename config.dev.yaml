@@ -1,0 +1,24 @@
+env: dev
+port: 1324
+apiTokenKey: secret
+schedulerTokenKey: secret
+callbackTokenKey: secret
+appCorsDomain: "*"
+jwtSecret: secret
+
+# postgres database local
+mysql:
+  maxOpenConnections: 4
+  maxIdleConnections: 2
+  master:
+    host: localhost
+    port: 3306
+    database: management_auth_db
+    username: root
+    password: 
+  slave:
+    host: localhost
+    port: 3306
+    database: management_auth_db
+    username: root
+    password: 

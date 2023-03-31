@@ -4,6 +4,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+
+
+
 func JwtGenerator(username, firstname, lastname, key string) string {
     //Generate Token JWT for auth
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

@@ -4,6 +4,7 @@ apiTokenKey: secret
 schedulerTokenKey: secret
 callbackTokenKey: secret
 appCorsDomain: "*"
+jwtSecret: secret
 
 # postgres database local
 mysql:
