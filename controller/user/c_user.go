@@ -43,5 +43,4 @@ func (ctrl userController) GetStudent() echo.HandlerFunc{
 		}
 		return response.RespondSuccess(c,http.StatusAlreadyReported, data,nil)
 	}
-		
 }
