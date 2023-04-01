@@ -4,7 +4,13 @@ apiTokenKey: secret
 schedulerTokenKey: secret
 callbackTokenKey: secret
 appCorsDomain: "*"
-jwtSecret: secret
+
+# jwt auth
+jwtAuth:
+  jwtSecretKey: secret
+  jwtRefreshSecretKey: secret
+  jwtExpire: 3600
+
 
 # postgres database local
 mysql:

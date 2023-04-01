@@ -1,7 +1,7 @@
-package mapping_course_teacher
+package mapping_course
 
 
-type MappingCourseTeacher struct {
+type MappingCourse struct {
 	ID int `json:"id"`
 	CourseID int `json:"course_id"`
 	TeacherID int `json:"teacher_id"`

@@ -1,11 +1,15 @@
 package auth
 
-import "github.com/labstack/echo/v4"
+import (
+	"context"
+
+	"github.com/labstack/echo/v4"
+)
 
 
 
 type authService interface {
-	Login(request LoginRequest) (string, error)
+	Login(ctx context.Context, parameter *LoginRequest) (data string, err error)
 }
 
 type authController struct {
@@ -22,11 +26,11 @@ func (ctrl authController) InitializeRoutes(userRouter *echo.Group, adminRouter 
 
 func (ctrl authController) Login() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		request := new(LoginRequest)
-		if err := c.Bind(request); err != nil {
+		reqLogin := new(LoginRequest)
+		if err := c.Bind(reqLogin); err != nil {
 			return err
 		}
-		token, err := ctrl.service.Login(*request)
+		token, err := ctrl.service.Login(c.Request().Context(), reqLogin)
 		if err != nil {
 			return err
 		}

@@ -24,7 +24,13 @@ type Config struct {
 	APITokenKey       string      `mapstructure:"apiTokenKey"`
 	AppCorsDomain     string      `mapstructure:"appCorsDomain"`
 	SecretKey         string      `mapstructure:"secretKey"`
-	JwtKey 						string			`mapstructure:"jwtKey"`
+	JwtAuth           JwtAuth     `mapstructure:"jwtAuth"`
+}
+
+type JwtAuth struct {
+	JwtSecretKey string `mapstructure:"jwtSecretKey"`
+	JwtRefreshSecretKey string `mapstructure:"jwtRefreshSecretKey"`
+	JwtExpireTime int `mapstructure:"jwtExpireTime"`
 }
 
 type MySQLConfig struct {

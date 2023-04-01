@@ -2,17 +2,16 @@ package middlewares
 
 import (
 	"github.com/dgrijalva/jwt-go"
+    authEntity "go-management-auth-school/entity/auth"
 )
 
 
 
 
-func JwtGenerator(username, firstname, lastname, key string) string {
+func JwtGenerator(params authEntity.JwtCustomClaimsStudent,key string) string {
     //Generate Token JWT for auth
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-        "username":  username,
-        "firstname": firstname,
-        "lastname":  lastname,
+        "data":  params,
     })
 
     tokenString, err := token.SignedString([]byte(key))

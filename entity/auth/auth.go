@@ -2,7 +2,7 @@ package auth
 
 import (
 	classEntity "go-management-auth-school/entity/class"
-	mappingCourse "go-management-auth-school/entity/mapping_course_teacher"
+	mappingCourse "go-management-auth-school/entity/mapping_course"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -17,6 +17,6 @@ type JwtCustomClaimsStudent struct {
     Type     string `json:"type"`
     Phone    string `json:"phone"`
     Class    classEntity.Class `json:"class"`
-		MappingCourse []mappingCourse.MappingCourseTeacher `json:"mapping_course"`
+		MappingCourse []mappingCourse.MappingCourse `json:"mapping_course"`
 		jwt.StandardClaims
 }
