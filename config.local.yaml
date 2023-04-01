@@ -9,7 +9,8 @@ appCorsDomain: "*"
 jwtAuth:
   jwtSecretKey: secret
   jwtRefreshSecretKey: secret
-  jwtExpire: 3600
+  jwtExpire: 72
+# jwt expire in Hour
 
 
 # postgres database local
