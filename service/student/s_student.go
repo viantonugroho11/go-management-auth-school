@@ -10,6 +10,7 @@ import (
 
 type StudentRepo interface {
 	SelectAll(ctx context.Context, parameter *studentRequset.StudentParams) (data []studentEntity.Student, err error)
+	// FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error)
 }
 
 type studentService struct {
@@ -27,6 +28,16 @@ func (service studentService)SelectAll(ctx context.Context, parameter *studentRe
 	// 	service.SetPaginationParameter(parameter.Page, parameter.Limit, studentEntity.MapOrderBy[parameter.OrderBy], parameter.Sort, studentEntity.OrderBy, studentEntity.OrderByString)
 
 	data, err = service.studentRepo.SelectAll(ctx, parameter)
+	if err != nil {
+		// logger.ErrorWithStack(ctx, err, "select all user query")
+		return
+	}
+	return
+}
+
+
+func (service studentService) FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error) {
+	data, err = service.studentRepo.FindOne(ctx, parameter)
 	if err != nil {
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return

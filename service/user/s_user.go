@@ -35,7 +35,7 @@ func (service userService)SelectAll(ctx context.Context, parameter *userRequset.
 	return
 }
 
-func (service userService)FindOne(ctx context.Context, parameter *userRequset.UserParams) (data userEntity.User, err error) {
+func (service userService) FindOne(ctx context.Context, parameter *userRequset.UserParams) (data userEntity.User, err error) {
 	data, err = service.userRepo.FindOne(ctx, parameter)
 	if err != nil {
 		// logger.ErrorWithStack(ctx, err, "select all user query")

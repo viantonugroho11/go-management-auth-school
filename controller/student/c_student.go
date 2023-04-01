@@ -17,6 +17,8 @@ import (
 type StudentService interface {
 
 	SelectAll(ctx context.Context, parameter *StudentParams) (data []studentEntity.Student, err error)
+	FindOne(ctx context.Context, parameter *StudentParams) (data studentEntity.Student, err error)
+	
 	
 }
 
