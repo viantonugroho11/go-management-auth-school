@@ -63,7 +63,7 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 
 	// generate token
 	dataStudent, err := service.studentService.FindOne(ctx, &studentServices.StudentParams{
-		IdentityID: dataUser.IdentifyID,
+		IdentityID: dataUser.IdentityID,
 	})
 	if err != nil {
 		return
@@ -78,19 +78,19 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 
 	jwtClaims := jwt.StandardClaims{
 			ExpiresAt: tokenExpireTime.Unix(),
-			Id: dataUser.IdentifyID,
+			Id: dataUser.IdentityID,
 		}
 	
 		refreshJwtClaims := jwt.StandardClaims{
 			ExpiresAt:refreshTokenExpireTime.Unix(),
-			Id: dataUser.IdentifyID,
+			Id: dataUser.IdentityID,
 		}
 
  token := jwthelper.JwtGenerator(jwtClaims , service.config.JwtAuth.JwtSecretKey)
  refreshToken := jwthelper.JwtGenerator(refreshJwtClaims , service.config.JwtAuth.JwtRefreshSecretKey)
 
  data = authEntity.Auth{
-	Indentity: dataUser.IdentifyID,
+	Indentity: dataUser.IdentityID,
 	IsActive: dataUser.Status,
 	// Type: dataUser.,
 	ExpiredAt: tokenExpireTime.Format("2006-01-02 15:04:05"),
