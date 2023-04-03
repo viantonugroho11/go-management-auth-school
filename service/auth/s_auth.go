@@ -9,12 +9,14 @@ import (
 	studentServices "go-management-auth-school/controller/student"
 	userController "go-management-auth-school/controller/user"
 	authEntity "go-management-auth-school/entity/auth"
-	"go-management-auth-school/entity/class"
+
+	// "go-management-auth-school/entity/class"
 	jwthelper "go-management-auth-school/helper/jwt"
 	userRepo "go-management-auth-school/service/user"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -42,7 +44,7 @@ func NewAuthService(repo userRepo.UserRepo, config config.Config,
 	}
 }
 
-func (service authService) Login(ctx context.Context, parameter *authLoginRequest.LoginRequest) (data userEntity.User, err error) {
+func (service authService) Login(ctx context.Context, parameter *authLoginRequest.LoginRequest) (data authEntity.Auth, err error) {
 	dataUser,err := service.userRepo.FindOne(ctx, &userController.UserParams{
 		Username: parameter.Username,
 	})
@@ -50,7 +52,6 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 		return
 	}
 	if dataUser.ID == "" {
-		err = errors.New("Username not found")
 		return
 	}
 
@@ -68,46 +69,36 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 		return
 	}
 	if dataStudent.ID == "" {
-		err = errors.New("Student not found")
 		return
 	}
 
-	dataMapStudent, err := service.mapStudentService.FindOne(ctx, &mapStudent.MappingStudentParams{
-		Indentity: dataStudent.Nis,
-	})
-	if err != nil || dataMapStudent.ID == 0 {
-		return
-	}
+	sessionID := uuid.New().String()
+	refreshTokenExpireTime := time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtRefreshExpireTime))
+	tokenExpireTime := time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtExpireTime))
 
-	dataMapCourse, err := service.mapCourseService.FindAll(ctx, &mappingCourseServices.MappingCourseParams{
-		ClassID: dataMapStudent.ClassID,
-	})
-	if err != nil {
-		return
-	}
-	if len(dataMapCourse) == 0 {
-		err = errors.New("Course not found")
-		return
-	}
+	jwtClaims := jwt.StandardClaims{
+			ExpiresAt: tokenExpireTime.Unix(),
+			Id: dataUser.IdentifyID,
+		}
+	
+		refreshJwtClaims := jwt.StandardClaims{
+			ExpiresAt:refreshTokenExpireTime.Unix(),
+			Id: dataUser.IdentifyID,
+		}
 
-	jwtClaims := authEntity.JwtCustomClaimsStudent{
-		Username: dataUser.Username,
-		Firstname: dataStudent.FirstName,
-		Lastname: dataStudent.LastName,
-		Indentity: dataUser.IdentifyID,
-		Type: "student",
-		Phone: dataStudent.Phone,
-		Class: class.Class{
-			// ID: dataMapStudent.ClassID,
-		},
-		MappingCourse: dataMapCourse,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtExpireTime)).Unix(),
-			Id: dataUser.ID,
-		},
-	}
+ token := jwthelper.JwtGenerator(jwtClaims , service.config.JwtAuth.JwtSecretKey)
+ refreshToken := jwthelper.JwtGenerator(refreshJwtClaims , service.config.JwtAuth.JwtRefreshSecretKey)
 
-	jwthelper.JwtGenerator(jwtClaims , service.config.JwtAuth.JwtSecretKey)
+ data = authEntity.Auth{
+	Indentity: dataUser.IdentifyID,
+	IsActive: dataUser.Status,
+	// Type: dataUser.,
+	ExpiredAt: tokenExpireTime.Format("2006-01-02 15:04:05"),
+	Token: token,
+	RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
+	RefreshToken: refreshToken,
+	SessionToken: sessionID,
+ }
 	
 	return
 }

@@ -31,6 +31,7 @@ type JwtAuth struct {
 	JwtSecretKey string `mapstructure:"jwtSecretKey"`
 	JwtRefreshSecretKey string `mapstructure:"jwtRefreshSecretKey"`
 	JwtExpireTime int `mapstructure:"jwtExpireTime"`
+	JwtRefreshExpireTime int `mapstructure:"jwtRefreshExpireTime"`
 }
 
 type MySQLConfig struct {

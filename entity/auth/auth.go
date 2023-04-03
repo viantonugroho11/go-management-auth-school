@@ -20,3 +20,15 @@ type JwtCustomClaimsStudent struct {
 		MappingCourse []mappingCourse.MappingCourse `json:"mapping_course"`
 		jwt.StandardClaims
 }
+
+type Auth struct {
+	Indentity string `json:"indentity"`
+	IsActive	bool   `json:"isActive"`
+	ExpiredAt string `json:"expiredAt"`
+	RefreshExpiredAt string `json:"refreshExpiredAt"`
+	Token string `json:"token"`
+	RefreshToken string `json:"refreshToken"`
+	Type string `json:"type"`
+	SessionToken string `json:"sessionToken"`
+	Status string `json:"status"`
+}
