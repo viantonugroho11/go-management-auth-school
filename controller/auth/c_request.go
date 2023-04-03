@@ -20,6 +20,16 @@ type RegisterRequest struct {
 	DeviceID string `json:"deviceId"`
 }
 
+func (i *LoginRequest) Validate() error {
+	err := validator.New().Struct(i)
+	if err != nil {
+		for _, er := range err.(validator.ValidationErrors) {
+			return fmt.Errorf("%v %v", er.Field(), er.ActualTag())
+		}
+	}
+	return nil
+}
+
 func (i *RegisterRequest) Validate() error {
 	err := validator.New().Struct(i)
 	if err != nil {
@@ -30,7 +40,7 @@ func (i *RegisterRequest) Validate() error {
 	return nil
 }
 
-func (i *RegisterRequest) ToEntity() (res *userEntity.User) {
+func (i *RegisterRequest) ToService() (res *userEntity.User) {
 	res = &userEntity.User{
 		Username: i.Username,
 		Password: i.Password,

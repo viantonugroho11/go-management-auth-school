@@ -8,7 +8,10 @@ import (
 	mapStudent "go-management-auth-school/controller/mapping_student"
 	studentServices "go-management-auth-school/controller/student"
 	userController "go-management-auth-school/controller/user"
+
+	//entity
 	authEntity "go-management-auth-school/entity/auth"
+	userEntity "go-management-auth-school/entity/user"
 
 	// "go-management-auth-school/entity/class"
 	jwthelper "go-management-auth-school/helper/jwt"
@@ -29,7 +32,6 @@ type authService struct {
 	mapCourseService mappingCourseServices.MappingCourseService
 	studentService studentServices.StudentService
 	mapStudentService mapStudent.MappingStudentService
-
 }
 
 func NewAuthService(repo userRepo.UserRepo, config config.Config, 
@@ -100,5 +102,47 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 	SessionToken: sessionID,
  }
 	
+	return
+}
+
+// func (service authService) RefreshToken(ctx context.Context, parameter *authLoginRequest.RefreshTokenRequest) (data authEntity.Auth, err error) {
+// 	return
+// }
+
+// func (service authService) Logout(ctx context.Context, parameter *authLoginRequest.LogoutRequest) (err error) {
+// 	return
+// }
+
+// func (service authService) ValidateToken(ctx context.Context, parameter *authLoginRequest.ValidateTokenRequest) (err error) {
+// 	return
+// }
+
+// func (service authService) ValidateRefreshToken(ctx context.Context, parameter *authLoginRequest.ValidateRefreshTokenRequest) (err error) {
+// 	return
+// }
+
+// func (service authService) ValidateSessionToken(ctx context.Context, parameter *authLoginRequest.ValidateSessionTokenRequest) (err error) {
+// 	return
+// }
+
+func (service authService) RegisterStudent(ctx context.Context, input *userEntity.User) (data string, err error) {
+	// check student
+	_, err = service.studentService.FindOne(ctx, &studentServices.StudentParams{
+		IdentityID: input.IdentityID,
+	})
+	if err != nil {
+		return
+	}
+
+	// check username
+	_, err = service.userRepo.FindOne(ctx, &userController.UserParams{
+		Username: input.Username,
+	})
+	if err != nil {
+		return
+	}
+
+	
+
 	return
 }
