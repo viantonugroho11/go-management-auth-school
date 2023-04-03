@@ -12,3 +12,7 @@ type UserParams struct {
 	Permission string `json:"permission"`
 	controller.DefaultParameter
 }
+
+type UserRequset struct {
+	
+}

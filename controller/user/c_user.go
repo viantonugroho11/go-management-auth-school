@@ -16,6 +16,7 @@ import (
 type userService interface {
 	SelectAll(ctx context.Context, parameter *UserParams) (data []studentEntity.Student, err error)
 	FindOne(ctx context.Context, parameter *UserParams) (data studentEntity.Student, err error)
+	
 }
 
 type userController struct {

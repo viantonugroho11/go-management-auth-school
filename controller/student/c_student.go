@@ -20,6 +20,7 @@ type StudentService interface {
 	FindOne(ctx context.Context, parameter *StudentParams) (data studentEntity.Student, err error)
 	
 	
+	
 }
 
 type studentController struct {
@@ -56,6 +57,5 @@ func (ctrl studentController) GetStudent() echo.HandlerFunc{
 			return err
 		}
 		return response.RespondSuccess(c,http.StatusAlreadyReported, FromServices(data),nil)
-	}
-		
+	}	
 } 
