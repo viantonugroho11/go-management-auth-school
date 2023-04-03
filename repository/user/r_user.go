@@ -4,9 +4,11 @@ import (
 	// "context"
 
 	"context"
+	"database/sql"
 	userRequset "go-management-auth-school/controller/user"
 	userEntity "go-management-auth-school/entity/user"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
 	"go-management-auth-school/helper/database"
@@ -44,6 +46,10 @@ func (repo userRepo) buildingParams(ctx context.Context, parameter *userRequset.
 	}
 
 	return 
+}
+
+func (repo userRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
+	return repo.DbMaster.BeginTxx(ctx, &sql.TxOptions{})
 }
 
 func (repo userRepo) SelectAll(ctx context.Context, parameter *userRequset.UserParams) (data []userEntity.User, err error) {
@@ -85,6 +91,17 @@ func(repo userRepo) FindOne(ctx context.Context, parameter *userRequset.UserPara
 		return
 	}
 	err = data.ScanRows(nil,row)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func(repo userRepo) Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string, err error) {
+	uuid := uuid.New()
+	query := `INSERT INTO `+userEntity.Table+` (id, username, password, identity_id, permission) VALUES ($1,$2,$3,$4) returning id`
+	err = tx.QueryRowContext(ctx, query, uuid, input.Username, input.Password, input.IdentityID, input.Permission).Scan(&res)
 	if err != nil {
 		return
 	}

@@ -14,5 +14,9 @@ type UserParams struct {
 }
 
 type UserRequset struct {
-	
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	RePassword string `json:"rePassword" validate:"required,eqfield=Password"`
+	IdentityID string `json:"identityId" validate:"required"`
+	DeviceID string `json:"deviceId"`
 }

@@ -3,13 +3,19 @@ package user
 import (
 	"context"
 
-	userEntity "go-management-auth-school/entity/user"
 	userRequset "go-management-auth-school/controller/user"
+	userEntity "go-management-auth-school/entity/user"
+
+	helperStr "go-management-auth-school/helper/str"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type UserRepo interface {
 	SelectAll(ctx context.Context, parameter *userRequset.UserParams) (data []userEntity.User, err error)
 	FindOne(ctx context.Context, parameter *userRequset.UserParams) (data userEntity.User, err error)
+	Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string,err error)
+	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
 }
 
 
@@ -37,6 +43,39 @@ func (service userService)SelectAll(ctx context.Context, parameter *userRequset.
 
 func (service userService) FindOne(ctx context.Context, parameter *userRequset.UserParams) (data userEntity.User, err error) {
 	data, err = service.userRepo.FindOne(ctx, parameter)
+	if err != nil {
+		// logger.ErrorWithStack(ctx, err, "select all user query")
+		return
+	}
+	return
+}
+
+func (service userService) Create(ctx context.Context, input *userEntity.User) (data userEntity.User, err error) {
+
+	if !helperStr.ValidatePassword(input.Password) {
+		return
+	}
+	// check if username already exist
+	data, err = service.userRepo.FindOne(ctx, &userRequset.UserParams{
+		Username: input.Username,
+	})
+	if err != nil {
+		return
+	}
+	if data.ID != "" {
+		return
+	}
+
+
+	tx , err := service.userRepo.CreateTx(ctx)
+	if err != nil {
+		return
+	}
+	defer tx.Rollback()
+	// permission 0 = user
+	// permission 1 = guru
+	// permission 2 = admin
+	_, err = service.userRepo.Create(ctx, tx, input)
 	if err != nil {
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return

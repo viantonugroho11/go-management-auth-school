@@ -32,17 +32,19 @@ type authService struct {
 	mapCourseService mappingCourseServices.MappingCourseService
 	studentService studentServices.StudentService
 	mapStudentService mapStudent.MappingStudentService
+	userService userController.UserService
 }
 
 func NewAuthService(repo userRepo.UserRepo, config config.Config, 
 	mapCourse mappingCourseServices.MappingCourseService, studentService studentServices.StudentService,
-	mapStudent mapStudent.MappingStudentService) *authService {
+	mapStudent mapStudent.MappingStudentService, userService userController.UserService) *authService {
 	return &authService{
 		userRepo: repo,
 		config: config,
 		mapCourseService: mapCourse,
 		studentService: studentService,
 		mapStudentService: mapStudent,
+		userService: userService,
 	}
 }
 
@@ -133,16 +135,12 @@ func (service authService) RegisterStudent(ctx context.Context, input *userEntit
 	if err != nil {
 		return
 	}
+	input.Permission = 0
 
 	// check username
-	_, err = service.userRepo.FindOne(ctx, &userController.UserParams{
-		Username: input.Username,
-	})
-	if err != nil {
-		return
-	}
+	service.userService.Create(ctx, input)		
 
-	
+
 
 	return
 }
