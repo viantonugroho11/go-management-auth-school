@@ -18,6 +18,7 @@ type UserService interface {
 	SelectAll(ctx context.Context, parameter *UserParams) (data []studentEntity.Student, err error)
 	FindOne(ctx context.Context, parameter *UserParams) (data userEntity.User, err error)
 	Create(ctx context.Context, parameter *userEntity.User) (data userEntity.User, err error)
+	UpdateUsername(ctx context.Context, parameter *userEntity.User) (err error)
 }
 
 type userController struct {
