@@ -27,7 +27,7 @@ import (
 type authRepository interface {
 }
 
-type authService struct {
+type AuthService struct {
 	userRepo          userRepo.UserRepo
 	config            config.Config
 	mapCourseService  mappingCourseServices.MappingCourseService
@@ -37,19 +37,19 @@ type authService struct {
 }
 
 func NewAuthService(repo userRepo.UserRepo, config config.Config,
-	mapCourse mappingCourseServices.MappingCourseService, studentService studentServices.StudentService,
-	mapStudent mapStudent.MappingStudentService, userService userController.UserService) *authService {
-	return &authService{
+	mapCourseService mappingCourseServices.MappingCourseService, studentService studentServices.StudentService,
+	mapStudentService mapStudent.MappingStudentService, userService userController.UserService) *AuthService {
+	return &AuthService{
 		userRepo:          repo,
 		config:            config,
-		mapCourseService:  mapCourse,
+		mapCourseService:  mapCourseService,
 		studentService:    studentService,
-		mapStudentService: mapStudent,
+		mapStudentService: mapStudentService,
 		userService:       userService,
 	}
 }
 
-func (service authService) Login(ctx context.Context, parameter *authLoginRequest.LoginRequest) (data authEntity.Auth, err error) {
+func (service AuthService) Login(ctx context.Context, parameter *authLoginRequest.LoginRequest) (data authEntity.Auth, err error) {
 	dataUser, err := service.userRepo.FindOne(ctx, &userController.UserParams{
 		Username: parameter.Username,
 	})
@@ -94,7 +94,7 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 	return
 }
 
-func (service authService) generateTokenJwt(dataUser userEntity.User) (time.Time, time.Time, string, string) {
+func (service AuthService) generateTokenJwt(dataUser userEntity.User) (time.Time, time.Time, string, string) {
 	refreshTokenExpireTime := time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtRefreshExpireTime))
 	tokenExpireTime := time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtExpireTime))
 
@@ -133,7 +133,7 @@ func (service authService) generateTokenJwt(dataUser userEntity.User) (time.Time
 // 	return
 // }
 
-func (service authService) RegisterStudent(ctx context.Context, input *userEntity.User) (data authEntity.Auth, err error) {
+func (service AuthService) RegisterStudent(ctx context.Context, input *userEntity.User) (data authEntity.Auth, err error) {
 	// check student
 	checkData, err := service.studentService.FindOne(ctx, &studentServices.StudentParams{
 		IdentityID: input.IdentityID,
