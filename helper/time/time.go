@@ -5,6 +5,7 @@ import (
 )
 
 const (
+	DATE_TIME_FORMAT      = "2006-01-02 15:04:05"
 	JAKARTA_TIME_LOCATION = "Asia/Jakarta"
 	DATE_FORMAT           = "2006-01-02"
 	DATE_FORMAT_DDMMMMYYYY 	= "02 January 2006"
