@@ -27,29 +27,29 @@ type authRepository interface {
 }
 
 type authService struct {
-	userRepo userRepo.UserRepo
-	config config.Config
-	mapCourseService mappingCourseServices.MappingCourseService
-	studentService studentServices.StudentService
+	userRepo          userRepo.UserRepo
+	config            config.Config
+	mapCourseService  mappingCourseServices.MappingCourseService
+	studentService    studentServices.StudentService
 	mapStudentService mapStudent.MappingStudentService
-	userService userController.UserService
+	userService       userController.UserService
 }
 
-func NewAuthService(repo userRepo.UserRepo, config config.Config, 
+func NewAuthService(repo userRepo.UserRepo, config config.Config,
 	mapCourse mappingCourseServices.MappingCourseService, studentService studentServices.StudentService,
 	mapStudent mapStudent.MappingStudentService, userService userController.UserService) *authService {
 	return &authService{
-		userRepo: repo,
-		config: config,
-		mapCourseService: mapCourse,
-		studentService: studentService,
+		userRepo:          repo,
+		config:            config,
+		mapCourseService:  mapCourse,
+		studentService:    studentService,
 		mapStudentService: mapStudent,
-		userService: userService,
+		userService:       userService,
 	}
 }
 
 func (service authService) Login(ctx context.Context, parameter *authLoginRequest.LoginRequest) (data authEntity.Auth, err error) {
-	dataUser,err := service.userRepo.FindOne(ctx, &userController.UserParams{
+	dataUser, err := service.userRepo.FindOne(ctx, &userController.UserParams{
 		Username: parameter.Username,
 	})
 	if err != nil {
@@ -81,29 +81,29 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 	tokenExpireTime := time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtExpireTime))
 
 	jwtClaims := jwt.StandardClaims{
-			ExpiresAt: tokenExpireTime.Unix(),
-			Id: dataUser.IdentityID,
-		}
-	
-		refreshJwtClaims := jwt.StandardClaims{
-			ExpiresAt:refreshTokenExpireTime.Unix(),
-			Id: dataUser.IdentityID,
-		}
+		ExpiresAt: tokenExpireTime.Unix(),
+		Id:        dataUser.IdentityID,
+	}
 
- token := jwthelper.JwtGenerator(jwtClaims , service.config.JwtAuth.JwtSecretKey)
- refreshToken := jwthelper.JwtGenerator(refreshJwtClaims , service.config.JwtAuth.JwtRefreshSecretKey)
+	refreshJwtClaims := jwt.StandardClaims{
+		ExpiresAt: refreshTokenExpireTime.Unix(),
+		Id:        dataUser.IdentityID,
+	}
 
- data = authEntity.Auth{
-	Indentity: dataUser.IdentityID,
-	IsActive: dataUser.Status,
-	// Type: dataUser.,
-	ExpiredAt: tokenExpireTime.Format("2006-01-02 15:04:05"),
-	Token: token,
-	RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
-	RefreshToken: refreshToken,
-	SessionToken: sessionID,
- }
-	
+	token := jwthelper.JwtGenerator(jwtClaims, service.config.JwtAuth.JwtSecretKey)
+	refreshToken := jwthelper.JwtGenerator(refreshJwtClaims, service.config.JwtAuth.JwtRefreshSecretKey)
+
+	data = authEntity.Auth{
+		Indentity: dataUser.IdentityID,
+		IsActive:  dataUser.Status,
+		// Type: dataUser.,
+		ExpiredAt:        tokenExpireTime.Format("2006-01-02 15:04:05"),
+		Token:            token,
+		RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
+		RefreshToken:     refreshToken,
+		SessionToken:     sessionID,
+	}
+
 	return
 }
 
@@ -137,10 +137,11 @@ func (service authService) RegisterStudent(ctx context.Context, input *userEntit
 	}
 	input.Permission = 0
 
-	// check username
-	service.userService.Create(ctx, input)		
-
-
+	// service user
+	_, err = service.userService.Create(ctx, input)
+	if err != nil {
+		return
+	}
 
 	return
 }
