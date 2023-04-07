@@ -2,6 +2,7 @@ package student
 
 import (
 	"context"
+	"database/sql"
 
 	studentRequset "go-management-auth-school/controller/student"
 	studentEntity "go-management-auth-school/entity/student"
@@ -58,6 +59,14 @@ func (repo studentRepo) buildingParams(ctx context.Context, parameter *studentRe
 	return 
 }
 
+func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
+	tx, err = repo.DbMaster.BeginTxx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return
+	}
+
+	return
+}
 
 func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset.StudentParams) (data []studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
@@ -84,5 +93,24 @@ func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset
 		return
 	}
 
+	return
+}
+
+func(repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error) {
+	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
+	query := studentEntity.SelectUser + ` WHERE def.delete_at is null ` + whereStatment + 
+	` ORDER BY ` + parameter.OrderBy + ` ` + parameter.Sort + `, def.id ` + parameter.Sort
+
+	query = database.SubstitutePlaceholder(query, 1)
+	err = repo.DbSlave.GetContext(ctx, &data, query, conditionParam...)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (repo studentRepo) Create(ctx context.Context,tx *sqlx.Tx, input *studentEntity.Student) (res string, err error) {
+	_= `INSERT INTO `+studentEntity.Table+` (id, nik, nisn, nis, first_name, last_name, join_date, created_at, updated_at)`
 	return
 }
