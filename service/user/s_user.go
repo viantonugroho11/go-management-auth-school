@@ -31,7 +31,7 @@ func NewUserService(repo UserRepo) *userService {
 	}
 }
 
-func (service userService)SelectAll(ctx context.Context, parameter *userRequset.UserParams) (data []userEntity.User, err error) {
+func (service userService) SelectAll(ctx context.Context, parameter *userRequset.UserParams) (data []userEntity.User, err error) {
 	// parameter.Offset, parameter.Limit, parameter.Page, parameter.OrderBy, parameter.Sort =
 	// 	service.SetPaginationParameter(parameter.Page, parameter.Limit, studentEntity.MapOrderBy[parameter.OrderBy], parameter.Sort, studentEntity.OrderBy, studentEntity.OrderByString)
 
