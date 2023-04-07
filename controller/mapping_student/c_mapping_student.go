@@ -1,15 +1,15 @@
 package mapping_student
 
-import (
-	"context"
+import "github.com/labstack/echo/v4"
 
-	mapStudentEntity "go-management-auth-school/entity/mapping_student"
-)
+// "context"
+
+// mapStudentEntity "go-management-auth-school/entity/mapping_student"
 
 type MappingStudentService interface {
-	FindAll(ctx context.Context, params *MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error)
-	SelectAll(ctx context.Context, parameter *MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error)
-	FindOne(ctx context.Context, params *MappingStudentParams) (data mapStudentEntity.MappingStudent, err error)
+	// FindAll(ctx context.Context, params *MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error)
+	// SelectAll(ctx context.Context, parameter *MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error)
+	// FindOne(ctx context.Context, params *MappingStudentParams) (data mapStudentEntity.MappingStudent, err error)
 }
 
 type mappingStudentController struct {
@@ -20,4 +20,8 @@ func NewMappingStudentController(mappingStudentService MappingStudentService) ma
 	return mappingStudentController{
 		mappingStudentService: mappingStudentService,
 	}
+}
+
+func (ctrl mappingStudentController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
+
 }
