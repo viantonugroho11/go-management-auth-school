@@ -15,6 +15,7 @@ import (
 
 	// "go-management-auth-school/entity/class"
 	jwthelper "go-management-auth-school/helper/jwt"
+	timeHelper "go-management-auth-school/helper/time"
 	userRepo "go-management-auth-school/service/user"
 	"time"
 
@@ -83,9 +84,9 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 		Indentity: dataUser.IdentityID,
 		IsActive:  dataUser.Status,
 		// Type: dataUser.,
-		ExpiredAt:        tokenExpireTime.Format("2006-01-02 15:04:05"),
+		ExpiredAt:        tokenExpireTime.Format(timeHelper.DATE_TIME_FORMAT),
 		Token:            token,
-		RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
+		RefreshExpiredAt: refreshTokenExpireTime.Format(timeHelper.DATE_TIME_FORMAT),
 		RefreshToken:     refreshToken,
 		SessionToken:     sessionID,
 	}
@@ -134,10 +135,13 @@ func (service authService) generateTokenJwt(dataUser userEntity.User) (time.Time
 
 func (service authService) RegisterStudent(ctx context.Context, input *userEntity.User) (data authEntity.Auth, err error) {
 	// check student
-	_, err = service.studentService.FindOne(ctx, &studentServices.StudentParams{
+	checkData, err := service.studentService.FindOne(ctx, &studentServices.StudentParams{
 		IdentityID: input.IdentityID,
 	})
 	if err != nil {
+		return
+	}
+	if checkData.ID == "" {
 		return
 	}
 	input.Permission = 0
@@ -154,9 +158,9 @@ func (service authService) RegisterStudent(ctx context.Context, input *userEntit
 		Indentity: dataUser.IdentityID,
 		IsActive:  dataUser.Status,
 		// Type: dataUser.,
-		ExpiredAt:        tokenExpireTime.Format("2006-01-02 15:04:05"),
+		ExpiredAt:        tokenExpireTime.Format(timeHelper.DATE_TIME_FORMAT),
 		Token:            token,
-		RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
+		RefreshExpiredAt: refreshTokenExpireTime.Format(timeHelper.DATE_TIME_FORMAT),
 		RefreshToken:     refreshToken,
 		SessionToken:     sessionID,
 	}
