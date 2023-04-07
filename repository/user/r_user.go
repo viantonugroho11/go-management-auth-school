@@ -19,7 +19,7 @@ type userRepo struct {
 	DbSlave  *sqlx.DB
 }
 
-func NewStudentRepo(dbMaster ,dbSlave *sqlx.DB) *userRepo {
+func NewUserRepo(dbMaster ,dbSlave *sqlx.DB) *userRepo {
 	return &userRepo{
 		DbMaster: dbMaster,
 		DbSlave:  dbSlave,
