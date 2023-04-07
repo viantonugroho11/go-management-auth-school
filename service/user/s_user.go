@@ -75,7 +75,7 @@ func (service userService) Create(ctx context.Context, input *userEntity.User) (
 	// permission 0 = user
 	// permission 1 = guru
 	// permission 2 = admin
-	_, err = service.userRepo.Create(ctx, tx, input)
+	data.IdentityID, err = service.userRepo.Create(ctx, tx, input)
 	if err != nil {
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return
