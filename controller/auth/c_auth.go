@@ -14,7 +14,7 @@ import (
 
 type authService interface {
 	Login(ctx context.Context, input *LoginRequest) (data authEntity.Auth, err error)
-	RegisterStudent(ctx context.Context, input *userEntity.User) (data string, err error)
+	RegisterStudent(ctx context.Context, input *userEntity.User) (data authEntity.Auth, err error)
 }
 
 type authController struct {
@@ -61,14 +61,12 @@ func (ctrl authController) RegisterStudent() echo.HandlerFunc {
 			return err
 		}
 
-		data := reqRegister.ToService()
-		// token, err := ctrl.service.RegisterStudent(c.Request().Context(), reqRegister)
-		// if err != nil {
-		// 	return err
-		// }
-		return c.JSON(200, map[string]string{
-			"token": token,
-		})
+		dataService := reqRegister.ToService()
+		data, err := ctrl.service.RegisterStudent(c.Request().Context(), dataService)
+		if err != nil {
+			return err
+		}
+		return response.RespondSuccess(c, 200, FromServiceLogin(data), nil)
 	}
 }
 
