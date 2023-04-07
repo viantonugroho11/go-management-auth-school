@@ -26,7 +26,8 @@ func NewAuthController(service authService) *authController {
 }
 
 func (ctrl authController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
-	userRouter.POST("/login", ctrl.Login())
+	authRouter.POST("/login", ctrl.Login())
+	authRouter.POST("/register", ctrl.RegisterStudent())
 }
 
 func (ctrl authController) Login() echo.HandlerFunc {
