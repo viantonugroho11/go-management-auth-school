@@ -77,6 +77,23 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 	}
 
 	sessionID := uuid.New().String()
+	refreshTokenExpireTime, tokenExpireTime, token, refreshToken := service.generateTokenJwt(dataUser)
+
+	data = authEntity.Auth{
+		Indentity: dataUser.IdentityID,
+		IsActive:  dataUser.Status,
+		// Type: dataUser.,
+		ExpiredAt:        tokenExpireTime.Format("2006-01-02 15:04:05"),
+		Token:            token,
+		RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
+		RefreshToken:     refreshToken,
+		SessionToken:     sessionID,
+	}
+
+	return
+}
+
+func (service authService) generateTokenJwt(dataUser userEntity.User) (time.Time, time.Time, string, string) {
 	refreshTokenExpireTime := time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtRefreshExpireTime))
 	tokenExpireTime := time.Now().Add(time.Hour * time.Duration(service.config.JwtAuth.JwtExpireTime))
 
@@ -92,19 +109,7 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 
 	token := jwthelper.JwtGenerator(jwtClaims, service.config.JwtAuth.JwtSecretKey)
 	refreshToken := jwthelper.JwtGenerator(refreshJwtClaims, service.config.JwtAuth.JwtRefreshSecretKey)
-
-	data = authEntity.Auth{
-		Indentity: dataUser.IdentityID,
-		IsActive:  dataUser.Status,
-		// Type: dataUser.,
-		ExpiredAt:        tokenExpireTime.Format("2006-01-02 15:04:05"),
-		Token:            token,
-		RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
-		RefreshToken:     refreshToken,
-		SessionToken:     sessionID,
-	}
-
-	return
+	return refreshTokenExpireTime, tokenExpireTime, token, refreshToken
 }
 
 // func (service authService) RefreshToken(ctx context.Context, parameter *authLoginRequest.RefreshTokenRequest) (data authEntity.Auth, err error) {
@@ -127,7 +132,7 @@ func (service authService) Login(ctx context.Context, parameter *authLoginReques
 // 	return
 // }
 
-func (service authService) RegisterStudent(ctx context.Context, input *userEntity.User) (data string, err error) {
+func (service authService) RegisterStudent(ctx context.Context, input *userEntity.User) (data authEntity.Auth, err error) {
 	// check student
 	_, err = service.studentService.FindOne(ctx, &studentServices.StudentParams{
 		IdentityID: input.IdentityID,
@@ -138,9 +143,22 @@ func (service authService) RegisterStudent(ctx context.Context, input *userEntit
 	input.Permission = 0
 
 	// service user
-	_, err = service.userService.Create(ctx, input)
+	dataUser, err := service.userService.Create(ctx, input)
 	if err != nil {
 		return
+	}
+	sessionID := uuid.New().String()
+	refreshTokenExpireTime, tokenExpireTime, token, refreshToken := service.generateTokenJwt(dataUser)
+
+	data = authEntity.Auth{
+		Indentity: dataUser.IdentityID,
+		IsActive:  dataUser.Status,
+		// Type: dataUser.,
+		ExpiredAt:        tokenExpireTime.Format("2006-01-02 15:04:05"),
+		Token:            token,
+		RefreshExpiredAt: refreshTokenExpireTime.Format("2006-01-02 15:04:05"),
+		RefreshToken:     refreshToken,
+		SessionToken:     sessionID,
 	}
 
 	return
