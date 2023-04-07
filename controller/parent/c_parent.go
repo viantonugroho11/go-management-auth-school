@@ -1,6 +1,6 @@
 package parent
 
-import ()
+import "github.com/labstack/echo/v4"
 
 type ParentService interface {
 }
@@ -13,4 +13,8 @@ func NewParentController(parentService ParentService) parentController {
 	return parentController{
 		parentService: parentService,
 	}
+}
+
+func (ctrl parentController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
+
 }
