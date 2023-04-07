@@ -9,6 +9,7 @@ import (
 
 	"go-management-auth-school/helper/database"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -111,6 +112,44 @@ func(repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.St
 }
 
 func (repo studentRepo) Create(ctx context.Context,tx *sqlx.Tx, input *studentEntity.Student) (res string, err error) {
-	_= `INSERT INTO `+studentEntity.Table+` (id, nik, nisn, nis, first_name, last_name, join_date, created_at, updated_at)`
+	query := InsertStudent
+	uuidRandom := uuid.New().String()
+	err = tx.QueryRowContext(ctx, query,
+		uuidRandom,
+		input.FirstName,
+		input.LastName,
+		input.Email,
+		input.Nisn,
+		input.Nis,
+		input.Nik,
+		input.PlaceOfBirth,
+		input.DateOfBirth,
+		input.Phone,
+		input.Address,
+		input.Gender,
+		input.Religion,
+		input.Image,
+		input.Status,
+		input.IsActive,
+		input.ProvinceID,
+		input.CityID,
+		input.SubdistrictID,
+		input.WardID,
+		input.Rt,
+		input.Rw,
+		input.Height,
+		input.Weight,
+		input.BloodType,
+		input.Disability,
+		input.DisabilityInfo,
+		input.JoinDate,
+		input.Details,
+	).Scan(&res)
+	if err != nil {
+		return
+	}
+	
+
+
 	return
 }
