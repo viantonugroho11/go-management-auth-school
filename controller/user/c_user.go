@@ -4,8 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-
-	studentEntity "go-management-auth-school/entity/student"
+	
 	userEntity "go-management-auth-school/entity/user"
 	"go-management-auth-school/response"
 
@@ -15,7 +14,7 @@ import (
 
 
 type UserService interface {
-	SelectAll(ctx context.Context, parameter *UserParams) (data []studentEntity.Student, err error)
+	SelectAll(ctx context.Context, parameter *UserParams) (data []userEntity.User, err error)
 	FindOne(ctx context.Context, parameter *UserParams) (data userEntity.User, err error)
 	Create(ctx context.Context, parameter *userEntity.User) (data userEntity.User, err error)
 	UpdateUsername(ctx context.Context, parameter *userEntity.User) (err error)
@@ -29,6 +28,10 @@ func NewUserController(service UserService) *userController {
 	return &userController{
 		userServices: service,
 	}
+}
+
+func (ctrl userController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
+	userRouter.GET("", ctrl.GetUser())
 }
 
 func (ctrl userController) GetUser() echo.HandlerFunc{
