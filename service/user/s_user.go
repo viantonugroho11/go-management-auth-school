@@ -15,6 +15,8 @@ type UserRepo interface {
 	SelectAll(ctx context.Context, parameter *userRequset.UserParams) (data []userEntity.User, err error)
 	FindOne(ctx context.Context, parameter *userRequset.UserParams) (data userEntity.User, err error)
 	Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string,err error)
+	UpdateUsername(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
+	UpdatePassword(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
 }
 
@@ -80,5 +82,50 @@ func (service userService) Create(ctx context.Context, input *userEntity.User) (
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return
 	}
+
+	tx.Commit()
+	return
+}
+
+// update
+func (service userService) UpdateUsername(ctx context.Context, input *userEntity.User) (err error) {
+	// check if username already exist
+	data, err := service.userRepo.FindOne(ctx, &userRequset.UserParams{
+		IdentityID: input.IdentityID,
+	})
+	if err != nil {
+		return
+	}
+
+	checkData,err := service.userRepo.FindOne(ctx, &userRequset.UserParams{
+		Username: input.Username,
+	})
+
+	if err != nil {
+		return
+	}
+	if checkData.IdentityID != input.IdentityID && checkData.Username == data.Username {
+		return
+	}
+
+	tx , err := service.userRepo.CreateTx(ctx)
+	if err != nil {
+		return
+	}
+	defer tx.Rollback()
+	err = service.userRepo.UpdateUsername(ctx, tx, &userEntity.User{
+		IdentityID: input.IdentityID,
+		Username: input.Username,
+	})
+	if err != nil {
+		// logger.ErrorWithStack(ctx, err, "select all user query")
+		return
+	}
+
+	tx.Commit()
+
+
+	
+	
 	return
 }

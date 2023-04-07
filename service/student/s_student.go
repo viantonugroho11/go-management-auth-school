@@ -48,3 +48,4 @@ func (service studentService) FindOne(ctx context.Context, parameter *studentReq
 	}
 	return
 }
+
