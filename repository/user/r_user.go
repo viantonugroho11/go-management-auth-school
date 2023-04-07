@@ -100,8 +100,28 @@ func(repo userRepo) FindOne(ctx context.Context, parameter *userRequset.UserPara
 
 func(repo userRepo) Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string, err error) {
 	uuid := uuid.New()
-	query := `INSERT INTO `+userEntity.Table+` (id, username, password, identity_id, permission) VALUES ($1,$2,$3,$4) returning identity_id`
-	err = tx.QueryRowContext(ctx, query, uuid, input.Username, input.Password, input.IdentityID, input.Permission).Scan(&res)
+	query := `INSERT INTO `+userEntity.Table+` (id, username, password, identity_id, permission, status) VALUES ($1,$2,$3,$4) returning identity_id`
+	err = tx.QueryRowContext(ctx, query, uuid, input.Username, input.Password, input.IdentityID, input.Permission,1).Scan(&res)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (repo userRepo) UpdateUsername(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error) {
+	query := `UPDATE `+userEntity.Table+` SET username = $1 WHERE identity_id = $2`
+	_, err = tx.ExecContext(ctx, query, input.Username, input.IdentityID)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (repo userRepo) UpdatePassword(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error) {
+	query := `UPDATE `+userEntity.Table+` SET password = $1 WHERE identity_id = $2`
+	_, err = tx.ExecContext(ctx, query, input.Password, input.IdentityID)
 	if err != nil {
 		return
 	}
