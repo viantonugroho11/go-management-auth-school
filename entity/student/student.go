@@ -42,7 +42,7 @@ type Student struct {
 	DisabilityInfo string `json:"DisabilityInfo"`
 
 	JoinDate string `json:"JoinDate"`
-	Details string `json:"Details"`
+	Details interface{} `json:"Details"`
 	CreatedAt string `json:"CreatedAt"`
 
 	UpdatedAt string `json:"UpdatedAt"`
