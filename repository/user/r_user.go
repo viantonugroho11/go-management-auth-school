@@ -100,7 +100,7 @@ func(repo userRepo) FindOne(ctx context.Context, parameter *userRequset.UserPara
 
 func(repo userRepo) Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string, err error) {
 	uuid := uuid.New()
-	query := `INSERT INTO `+userEntity.Table+` (id, username, password, identity_id, permission) VALUES ($1,$2,$3,$4) returning id`
+	query := `INSERT INTO `+userEntity.Table+` (id, username, password, identity_id, permission) VALUES ($1,$2,$3,$4) returning identity_id`
 	err = tx.QueryRowContext(ctx, query, uuid, input.Username, input.Password, input.IdentityID, input.Permission).Scan(&res)
 	if err != nil {
 		return
