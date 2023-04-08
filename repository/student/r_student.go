@@ -3,12 +3,11 @@ package student
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	studentRequset "go-management-auth-school/controller/student"
 	studentEntity "go-management-auth-school/entity/student"
 
-	"go-management-auth-school/helper/database"
+	// "go-management-auth-school/helper/database"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -101,11 +100,11 @@ func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset
 
 func(repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := studentEntity.SelectUser + ` WHERE def.delete_at is null ` + whereStatment + 
-	` ORDER BY ` + parameter.OrderBy + ` ` + parameter.Sort + `, def.id ` + parameter.Sort
+	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment 
 
-	query = database.SubstitutePlaceholder(query, 1)
-	err = repo.DbSlave.GetContext(ctx, &data, query, conditionParam...)
+	// query = database.SubstitutePlaceholder(query, 1)
+	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
+	err = data.ScanRows(nil, row)
 	if err != nil {
 		return
 	}
@@ -115,8 +114,9 @@ func(repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.St
 
 func (repo studentRepo) Create(ctx context.Context,tx *sqlx.Tx, input *studentEntity.Student) (res string, err error) {
 	query := InsertStudent
+	//convert string to date
 	uuidRandom := uuid.New().String()
-	err = tx.QueryRowContext(ctx, query,
+	_, err = tx.ExecContext(ctx, query,
 		uuidRandom,
 		input.FirstName,
 		input.LastName,
@@ -146,12 +146,10 @@ func (repo studentRepo) Create(ctx context.Context,tx *sqlx.Tx, input *studentEn
 		input.DisabilityInfo,
 		input.JoinDate,
 		input.Details,
-	).Scan(&res)
+	)
 	if err != nil {
 		return
 	}
-
-
 
 	return
 }

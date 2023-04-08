@@ -32,7 +32,7 @@ type StudentRequest struct {
 
 	Phone string `json:"Phone"`
 	Address string `json:"Address"`
-	Gender string `json:"gender"`
+	Gender string `json:"Gender"`
 	Religion string `json:"Religion"`
 	Image string `json:"Image"`
 	ProvinceID int `json:"ProvinceID"`
@@ -44,8 +44,8 @@ type StudentRequest struct {
 	Rw int `json:"Rw"`
 	// PostalCode int `json:"PostalCode"`
 
-	Height int `json:"height"`
-	Weight int `json:"weight"`
+	Height int `json:"Height"`
+	Weight int `json:"Weight"`
 	BloodType string `json:"BloodType"`
 	Disability int `json:"Disability"`
 	DisabilityInfo string `json:"DisabilityInfo"`
@@ -71,6 +71,7 @@ func (i *StudentRequest) ToService() (res *studentEntity.Student) {
 		Email: i.Email,
 		Nisn: i.Nisn,
 		Nik: i.Nik,
+		Nis: i.Nis,
 		PlaceOfBirth: i.PlaceOfBirth,
 		DateOfBirth: i.DateOfBirth,
 		Phone: i.Phone,
