@@ -34,6 +34,9 @@ func (s *RestServer) Start() {
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 
+		AllowHeaders:   []string{"*"},
+		AllowCredentials: false,
+
 	}))
 
 	// Setup http server

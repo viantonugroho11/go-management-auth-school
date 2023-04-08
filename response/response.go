@@ -26,7 +26,7 @@ type ApiResponseModel struct {
 
 
 
-func RespondSuccess(c echo.Context, statusCode int, data, meta interface{}) error {
+func RespondSuccess(c echo.Context, statusCode int, data, meta interface{}) (err error)  {
 	bt, err := json.Marshal(ApiResponseModel{
 		Success: true,
 		Data:    data,
@@ -40,15 +40,15 @@ func RespondSuccess(c echo.Context, statusCode int, data, meta interface{}) erro
 		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 		c.Response().WriteHeader(http.StatusInternalServerError)
 		c.Response().Write(bt)
-		return c.JSON(http.StatusInternalServerError, bt)
+		return 
 	}
 	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 	c.Response().WriteHeader(statusCode)
 	c.Response().Write(bt)
-	return c.JSON(statusCode, bt)
+	return err
 }
 
-func RespondError(c echo.Context, statusCode int, err error) error {
+func RespondError(c echo.Context, statusCode int, err error) (error) {
 	bt, err := json.Marshal(ApiResponseModel{
 		Success: false,
 		Data:    nil,
@@ -62,11 +62,12 @@ func RespondError(c echo.Context, statusCode int, err error) error {
 		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 		c.Response().WriteHeader(http.StatusInternalServerError)
 		c.Response().Write(bt)
-		return c.JSON(http.StatusInternalServerError, bt)
+		return err
 	}
 	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 	c.Response().WriteHeader(statusCode)
-	return c.JSON(statusCode, bt)
+	c.Response().Write(bt)
+	return err
 }
 
 func RespondErrorWithMessage(c echo.Context, statusCode int, err error) error {
@@ -88,11 +89,11 @@ func RespondErrorWithMessage(c echo.Context, statusCode int, err error) error {
 		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 		c.Response().WriteHeader(http.StatusInternalServerError)
 		c.Response().Write(bt)
-		return c.JSON(http.StatusInternalServerError, bt)
+		return err
 	}
 	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 	c.Response().WriteHeader(statusCode)
-	return c.JSON(statusCode, bt)
+	return err
 }
 
 func RespondStatMsg(c echo.Context, statusCode int, errMessages string) error {
@@ -109,11 +110,11 @@ func RespondStatMsg(c echo.Context, statusCode int, errMessages string) error {
 		c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 		c.Response().WriteHeader(http.StatusInternalServerError)
 		c.Response().Write(bt)
-		return c.JSON(http.StatusInternalServerError, bt)
+		return err
 	}
 	c.Response().Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 	c.Response().WriteHeader(statusCode)
-	return c.JSON(statusCode, bt)
+	return err
 }
 
 // SendFileSuccess send success file into response with 200 http code.
