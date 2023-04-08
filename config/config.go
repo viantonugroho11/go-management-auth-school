@@ -129,7 +129,29 @@ func SetupMasterDB(conf Config) (db *sqlx.DB) {
 }
 
 func SetupSlaveDB(conf Config) (db *sqlx.DB) {
-	return db
+	// db, err := sqlx.Connect("mysql", "username:password@(localhost:3306)/dbname")
+	log.Printf("Connecting to postgresql (master) %s", fmt.Sprintf("host=%s user=%s dbname=%s port=%d",
+		conf.MySQL.Slave.Host, conf.MySQL.Slave.Username, conf.MySQL.Slave.Database, conf.MySQL.Slave.Port))
+
+	var (
+		SlaveDB *sqlx.DB
+		err      error
+	)
+
+	SlaveDB, err = sqlx.Connect("mysql",
+		fmt.Sprintf("%s:%s@(%s:%d)/%s",
+			conf.MySQL.Slave.Username, conf.MySQL.Slave.Password, conf.MySQL.Slave.Host, conf.MySQL.Slave.Port, conf.MySQL.Slave.Database))
+	if err != nil {
+		log.Fatalf("open db connection failed (master) %v", err)
+	}
+
+	// masterDB.SetMaxOpenConns(conf.Postgres.MaxOpenConnections)
+	// masterDB.SetMaxIdleConns(conf.Postgres.MaxIdleConnections)
+	// masterDB.SetConnMaxIdleTime(time.Duration(conf.Postgres.MaxIdleLifetime) * time.Millisecond)
+	// if err := masterDB.Ping(); err != nil && !unitTest {
+	// 	log.Fatalf("ping db connection failed (master) %v", err)
+	// }
+	return SlaveDB
 }
 
 func InitialiseFileAndEnv(v *viper.Viper, configName string) error {
