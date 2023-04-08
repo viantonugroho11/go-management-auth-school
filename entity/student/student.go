@@ -46,19 +46,21 @@ type Student struct {
 	CreatedAt string `json:"CreatedAt"`
 
 	UpdatedAt string `json:"UpdatedAt"`
-	DeletedAt string `json:"DeletedAt"`
+	DeletedAt sql.NullString `json:"DeletedAt"`
 }
 
 var (
 	Table = `student`
-	Column = []string{`def.id`,`def.first_name`,`def.last_name`,`def.email`,`def.nisn`,`def.nis`,
-	`def.nik`,`def.place_of_birth`,`def.date_of_birth`,`def.phone`,`def.address`,`def.gender`,
-	`def.religion`,`def.image`,`def.status`,`def.is_active`,`def.province_id`,`def.city_id`,
-	`def.subdistrict_id`,`def.ward_id`,`def.rt`,`def.rw`,`def.height`,`def.weight`,`def.blood_type`,
-	`def.disability`,`def.disability_info`,`def.join_date`,`def.details`,`def.created_at`,`def.updated_at`,
+	Column = []string{`def.id`, `def.first_name`, `def.last_name`, `def.email`, `def.nisn`, `def.nis`, 
+	`def.nik`, `def.place_of_birth`, `def.date_of_birth`, `def.phone`, `def.address`, `def.gender`, 
+	`def.religion`, `def.image`, `def.status`, `def.is_active`, `def.province_id`, `def.city_id`, 
+	`def.subdistrict_id`, `def.ward_id`, `def.rt`, `def.rw`, `def.height`, `def.weight`, `def.blood_type`, 
+	`def.disability`, `def.disability_info`, `def.join_date`, `def.details`, `def.created_at`, `def.updated_at`, 
 	`def.deleted_at`}
 
 	SelectUser = `SELECT ` + strings.Join(Column, `,`) + ` FROM ` + Table + ` def`
+
+	GroupStatement = ` GROUP BY def.id`
 )
 
 func (m *Student) ScanRows(rows *sql.Rows, row *sql.Row) error{
