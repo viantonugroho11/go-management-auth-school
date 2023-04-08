@@ -35,9 +35,6 @@ type StudentRequest struct {
 	Gender string `json:"gender"`
 	Religion string `json:"Religion"`
 	Image string `json:"Image"`
-	Status int `json:"Status"`
-
-	IsActive int `json:"IsActive"`
 	ProvinceID int `json:"ProvinceID"`
 	CityID int `json:"CityID"`
 	SubdistrictID int `json:"SubdistrictID"`
@@ -67,7 +64,7 @@ func (i *StudentRequest) Validate() error {
 	return nil
 }
 
-func (i *StudentRequest) ToEntity() (res *studentEntity.Student) {
+func (i *StudentRequest) ToService() (res *studentEntity.Student) {
 	res = &studentEntity.Student{
 		FirstName: i.FirstName,
 		LastName: i.LastName,
@@ -78,6 +75,21 @@ func (i *StudentRequest) ToEntity() (res *studentEntity.Student) {
 		DateOfBirth: i.DateOfBirth,
 		Phone: i.Phone,
 		Address: i.Address,
+		Gender: i.Gender,
+		Religion: i.Religion,
+		Image: i.Image,
+		ProvinceID: i.ProvinceID,
+		CityID: i.CityID,
+		SubdistrictID: i.SubdistrictID,
+		WardID: i.WardID,
+		Rt: i.Rt,
+		Rw: i.Rw,
+		Height: i.Height,
+		Weight: i.Weight,
+		BloodType: i.BloodType,
+		Disability: i.Disability,
+		DisabilityInfo: i.DisabilityInfo,
+		Details: i.Details,
 	}
 	return
 
