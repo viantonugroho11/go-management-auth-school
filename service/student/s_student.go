@@ -2,6 +2,9 @@ package student
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	// "log"
 
 	studentRequset "go-management-auth-school/controller/student"
 	studentEntity "go-management-auth-school/entity/student"
@@ -31,6 +34,7 @@ func (service studentService) SelectAll(ctx context.Context, parameter *studentR
 	// parameter.Offset, parameter.Limit, parameter.Page, parameter.OrderBy, parameter.Sort =
 	// 	service.SetPaginationParameter(parameter.Page, parameter.Limit, studentEntity.MapOrderBy[parameter.OrderBy], parameter.Sort, studentEntity.OrderBy, studentEntity.OrderByString)
 
+	fmt.Println("service")
 	data, err = service.studentRepo.SelectAll(ctx, parameter)
 	if err != nil {
 		// logger.ErrorWithStack(ctx, err, "select all user query")
@@ -46,6 +50,32 @@ func (service studentService) FindOne(ctx context.Context, parameter *studentReq
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return
 	}
+	return
+}
+
+func (service studentService) Create(ctx context.Context, input *studentEntity.Student) (err error) {
+
+	checkStudent, err := service.studentRepo.FindOne(ctx, &studentRequset.StudentParams{
+		Nis: input.Nis,
+	})
+	if err != nil {
+		return
+	}
+	if checkStudent.Nis != "" {
+		err = errors.New("nis already exist")
+		return
+	}
+
+	tx, err := service.studentRepo.CreateTx(ctx)
+	if err != nil {
+		return
+	}
+	_, err = service.studentRepo.Create(ctx, tx, input)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
 	return
 }
 
