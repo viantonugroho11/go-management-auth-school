@@ -3,6 +3,7 @@ package student
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	studentRequset "go-management-auth-school/controller/student"
 	studentEntity "go-management-auth-school/entity/student"
@@ -29,31 +30,31 @@ func NewStudentRepo(dbMaster ,dbSlave *sqlx.DB) *studentRepo {
 func (repo studentRepo) buildingParams(ctx context.Context, parameter *studentRequset.StudentParams) (conditionString string, conditionParam []interface{}) {
 	
 	if parameter.ID != "" {
-		conditionString += " AND id = ?"
+		conditionString += " AND def.id = ?"
 		conditionParam = append(conditionParam, parameter.ID)
 	}
 	if parameter.Nik != "" {
-		conditionString += " AND nik = ?"
+		conditionString += " AND def.nik = ?"
 		conditionParam = append(conditionParam, parameter.Nik)
 	}
 	if parameter.Nisn != "" {
-		conditionString += " AND nisn = ?"
+		conditionString += " AND def.nisn = ?"
 		conditionParam = append(conditionParam, parameter.Nisn)
 	}
 	if parameter.Nis != "" {
-		conditionString += " AND nis = ?"
+		conditionString += " AND def.nis = ?"
 		conditionParam = append(conditionParam, parameter.Nis)
 	}
 	if parameter.FirstName != "" {
-		conditionString += " AND first_name = ?"
+		conditionString += " AND def.first_name = ?"
 		conditionParam = append(conditionParam, parameter.FirstName)
 	}
 	if parameter.LastName != "" {
-		conditionString += " AND last_name = ?"
+		conditionString += " AND def.last_name = ?"
 		conditionParam = append(conditionParam, parameter.LastName)
 	}
 	if parameter.JoinDate != "" {
-		conditionString += " AND join_date = ?"
+		conditionString += " AND def.join_date = ?"
 		conditionParam = append(conditionParam, parameter.JoinDate)
 	}
 
@@ -71,14 +72,15 @@ func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 
 func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset.StudentParams) (data []studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := studentEntity.SelectUser + ` WHERE def.delete_at is null ` + whereStatment + 
-	` ORDER BY ` + parameter.OrderBy + ` ` + parameter.Sort + `, def.id ` + parameter.Sort
+	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` `+studentEntity.GroupStatement+
+	` ORDER BY def.id` + parameter.OrderBy 
 
-	query = database.SubstitutePlaceholder(query, 1)
+	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
 	if err != nil {
-		return
+		return 
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		temp := studentEntity.Student{}
@@ -148,7 +150,7 @@ func (repo studentRepo) Create(ctx context.Context,tx *sqlx.Tx, input *studentEn
 	if err != nil {
 		return
 	}
-	
+
 
 
 	return
