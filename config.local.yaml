@@ -8,7 +8,9 @@ appCorsDomain: "*"
 # jwt auth
 jwtAuth:
   jwtSecretKey: secret
-  jwtRefreshSecretKey: secret
+  jwtRefreshSecretKey: refreshsecret
+  jwtExpireTime: 2
+  jwtRefreshExpireTime: 2
   jwtExpire: 72
 # jwt expire in Hour
 

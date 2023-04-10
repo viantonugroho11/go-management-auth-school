@@ -134,11 +134,11 @@ func SetupSlaveDB(conf Config) (db *sqlx.DB) {
 		conf.MySQL.Slave.Host, conf.MySQL.Slave.Username, conf.MySQL.Slave.Database, conf.MySQL.Slave.Port))
 
 	var (
-		SlaveDB *sqlx.DB
+		slaveDB *sqlx.DB
 		err      error
 	)
 
-	SlaveDB, err = sqlx.Connect("mysql",
+	slaveDB, err = sqlx.Connect("mysql",
 		fmt.Sprintf("%s:%s@(%s:%d)/%s",
 			conf.MySQL.Slave.Username, conf.MySQL.Slave.Password, conf.MySQL.Slave.Host, conf.MySQL.Slave.Port, conf.MySQL.Slave.Database))
 	if err != nil {
@@ -151,7 +151,7 @@ func SetupSlaveDB(conf Config) (db *sqlx.DB) {
 	// if err := masterDB.Ping(); err != nil && !unitTest {
 	// 	log.Fatalf("ping db connection failed (master) %v", err)
 	// }
-	return SlaveDB
+	return slaveDB
 }
 
 func InitialiseFileAndEnv(v *viper.Viper, configName string) error {
