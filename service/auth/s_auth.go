@@ -2,12 +2,14 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"go-management-auth-school/config"
 	authLoginRequest "go-management-auth-school/controller/auth"
 	mappingCourseServices "go-management-auth-school/controller/mapping_course"
 	mapStudent "go-management-auth-school/controller/mapping_student"
 	studentServices "go-management-auth-school/controller/student"
 	userController "go-management-auth-school/controller/user"
+	"strings"
 
 	//entity
 	authEntity "go-management-auth-school/entity/auth"
@@ -79,6 +81,21 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 
 	sessionID := uuid.New().String()
 	refreshTokenExpireTime, tokenExpireTime, token, refreshToken := service.generateTokenJwt(dataUser)
+
+	// create tx
+	tx, err := service.userRepo.CreateTx(ctx)
+	if err != nil {
+		return
+	}
+
+	// update last login
+	err = service.userRepo.UpdateLastLogin(ctx, tx, &userEntity.User{
+		IdentityID: dataUser.IdentityID,
+	})
+	if err != nil {
+		return
+	}
+
 
 	data = authEntity.Auth{
 		Indentity: dataUser.IdentityID,
@@ -165,5 +182,23 @@ func (service AuthService) RegisterStudent(ctx context.Context, input *userEntit
 		SessionToken:     sessionID,
 	}
 
+	return
+}
+
+
+func (service AuthService) ValidateToken(ctx context.Context, token string) (data authEntity.AuthValidate, err error){
+	
+	tokenBearer := strings.Split(token, " ")
+	if len(tokenBearer) == 2 {
+		token = tokenBearer[1]
+	}
+
+	_ = func(token *jwt.Token) (interface{}, error) {
+        _, ok := token.Method.(*jwt.SigningMethodHMAC)
+        if !ok {
+            return nil, errors.New("Invalid token")
+        }
+        return nil, nil
+    }
 	return
 }

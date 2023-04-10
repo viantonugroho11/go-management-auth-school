@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
-	"go-management-auth-school/helper/database"
+	// "go-management-auth-school/helper/database"
 )
 
 type userRepo struct {
@@ -54,10 +54,10 @@ func (repo userRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 
 func (repo userRepo) SelectAll(ctx context.Context, parameter *userRequset.UserParams) (data []userEntity.User, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := userEntity.SelectUser + ` WHERE def.delete_at is null ` + whereStatment + 
-	` ORDER BY ` + parameter.OrderBy + ` ` + parameter.Sort + `, def.id ` + parameter.Sort
+	query := userEntity.SelectUser + ` WHERE def.deleted_at is null ` + whereStatment + 
+	` ORDER BY def.id` + parameter.OrderBy 
 
-	query = database.SubstitutePlaceholder(query, 1)
+	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
 	if err != nil {
 		return
@@ -82,10 +82,9 @@ func (repo userRepo) SelectAll(ctx context.Context, parameter *userRequset.UserP
 
 func(repo userRepo) FindOne(ctx context.Context, parameter *userRequset.UserParams) (data userEntity.User, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := userEntity.SelectUser + ` WHERE def.delete_at is null ` + whereStatment + 
-	` ORDER BY ` + parameter.OrderBy + ` ` + parameter.Sort + `, def.id ` + parameter.Sort
+	query := userEntity.SelectUser + ` WHERE def.deleted_at IS NULL` + whereStatment 
 
-	query = database.SubstitutePlaceholder(query, 1)
+	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	if err != nil {
 		return
@@ -99,18 +98,19 @@ func(repo userRepo) FindOne(ctx context.Context, parameter *userRequset.UserPara
 }
 
 func(repo userRepo) Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string, err error) {
-	uuid := uuid.New()
-	query := `INSERT INTO `+userEntity.Table+` (id, username, password, identity_id, permission, status) VALUES ($1,$2,$3,$4) returning identity_id`
-	err = tx.QueryRowContext(ctx, query, uuid, input.Username, input.Password, input.IdentityID, input.Permission,1).Scan(&res)
+	uuidRandom := uuid.New().String()
+	query := `INSERT INTO `+userEntity.Table+` (id, username, password, identity_id, permission, status) VALUES (?,?,?,?,?,?)`
+	_, err = tx.ExecContext(ctx, query, uuidRandom, input.Username, input.Password, input.IdentityID, input.Permission, 1)
 	if err != nil {
 		return
 	}
+	res = input.IdentityID
 
 	return
 }
 
 func (repo userRepo) UpdateUsername(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error) {
-	query := `UPDATE `+userEntity.Table+` SET username = $1 WHERE identity_id = $2`
+	query := `UPDATE `+userEntity.Table+` SET username = ? WHERE identity_id = ?`
 	_, err = tx.ExecContext(ctx, query, input.Username, input.IdentityID)
 	if err != nil {
 		return
@@ -120,8 +120,29 @@ func (repo userRepo) UpdateUsername(ctx context.Context,tx *sqlx.Tx, input *user
 }
 
 func (repo userRepo) UpdatePassword(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error) {
-	query := `UPDATE `+userEntity.Table+` SET password = $1 WHERE identity_id = $2`
+	query := `UPDATE `+userEntity.Table+` SET password = ? WHERE identity_id = ?`
 	_, err = tx.ExecContext(ctx, query, input.Password, input.IdentityID)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (repo userRepo) UpdatePermission(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error) {
+	query := `UPDATE `+userEntity.Table+` SET permission = ? WHERE identity_id = ?`
+	_, err = tx.ExecContext(ctx, query, input.Permission, input.IdentityID)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+//last login
+func (repo userRepo) UpdateLastLogin(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error) {
+	query := `UPDATE `+userEntity.Table+` SET last_login = NOW() WHERE identity_id = ?`
+	_, err = tx.ExecContext(ctx, query, input.IdentityID)
 	if err != nil {
 		return
 	}

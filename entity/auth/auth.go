@@ -3,6 +3,9 @@ package auth
 import (
 	classEntity "go-management-auth-school/entity/class"
 	mappingCourse "go-management-auth-school/entity/mapping_course"
+	userEntity "go-management-auth-school/entity/user"
+	mapStudent "go-management-auth-school/entity/mapping_student"
+
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -31,4 +34,10 @@ type Auth struct {
 	Type string `json:"type"`
 	SessionToken string `json:"sessionToken"`
 	Status string `json:"status"`
+}
+
+type AuthValidate struct {
+	Identity string `json:"identity"`
+	User userEntity.User `json:"user"`
+	MpClass mapStudent.MappingStudent `json:"mp_class"`
 }
