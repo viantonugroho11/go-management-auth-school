@@ -87,6 +87,7 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	if err != nil {
 		return
 	}
+	defer tx.Rollback()
 
 	// update last login
 	err = service.userRepo.UpdateLastLogin(ctx, tx, &userEntity.User{
@@ -95,6 +96,9 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	if err != nil {
 		return
 	}
+
+	tx.Commit()
+
 
 
 	data = authEntity.Auth{

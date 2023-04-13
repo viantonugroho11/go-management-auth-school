@@ -7,10 +7,10 @@ import (
 	"database/sql"
 	userRequset "go-management-auth-school/controller/user"
 	userEntity "go-management-auth-school/entity/user"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-
 	// "go-management-auth-school/helper/database"
 )
 
@@ -141,8 +141,10 @@ func (repo userRepo) UpdatePermission(ctx context.Context,tx *sqlx.Tx, input *us
 
 //last login
 func (repo userRepo) UpdateLastLogin(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error) {
-	query := `UPDATE `+userEntity.Table+` SET last_login = NOW() WHERE identity_id = ?`
-	_, err = tx.ExecContext(ctx, query, input.IdentityID)
+	//time now local jakarta
+	timeNow := time.Now().In(time.FixedZone("Asia/Jakarta", 7*60*60)).Format("2006-01-02 15:04:05")
+	query := `UPDATE `+userEntity.Table+` SET last_login = ? WHERE identity_id = ?`
+	_, err = tx.ExecContext(ctx, query, timeNow, input.IdentityID)
 	if err != nil {
 		return
 	}
