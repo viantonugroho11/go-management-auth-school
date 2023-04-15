@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"database/sql"
 
 	userRequset "go-management-auth-school/controller/user"
 	userEntity "go-management-auth-school/entity/user"
@@ -9,6 +10,7 @@ import (
 	helperStr "go-management-auth-school/helper/str"
 
 	"github.com/jmoiron/sqlx"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRepo interface {
@@ -17,6 +19,8 @@ type UserRepo interface {
 	Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string,err error)
 	UpdateUsername(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
 	UpdatePassword(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
+
+	UpdateLastLogin(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
 }
 
@@ -53,22 +57,28 @@ func (service userService) FindOne(ctx context.Context, parameter *userRequset.U
 }
 
 func (service userService) Create(ctx context.Context, input *userEntity.User) (data userEntity.User, err error) {
-
-	if !helperStr.ValidatePassword(input.Password) {
+	// check if password is valid
+	if helperStr.ValidatePassword(input.Password) {
 		return
 	}
 	// check if username already exist
-	data, err = service.userRepo.FindOne(ctx, &userRequset.UserParams{
+	checkData, err := service.userRepo.SelectAll(ctx, &userRequset.UserParams{
 		Username: input.Username,
 	})
+	if err != sql.ErrNoRows && err != nil {
+		return
+	}
+	if len(checkData) > 0 {
+		return
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), 5)
 	if err != nil {
 		return
 	}
-	if data.ID != "" {
-		return
-	}
 
 
+	input.Password = string(hash)
 	tx , err := service.userRepo.CreateTx(ctx)
 	if err != nil {
 		return
@@ -79,6 +89,7 @@ func (service userService) Create(ctx context.Context, input *userEntity.User) (
 	// permission 2 = admin
 	data.IdentityID, err = service.userRepo.Create(ctx, tx, input)
 	if err != nil {
+		tx.Rollback()
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return
 	}

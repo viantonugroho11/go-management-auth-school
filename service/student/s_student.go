@@ -54,6 +54,7 @@ func (service studentService) FindOne(ctx context.Context, parameter *studentReq
 func (service studentService) Create(ctx context.Context, input *studentEntity.Student) (err error) {
 	checkStudent, err := service.studentRepo.SelectAll(ctx, &studentRequset.StudentParams{
 		Nis: input.Nis,
+		Nisn: input.Nisn,
 	})
 	if err != nil {
 		return
