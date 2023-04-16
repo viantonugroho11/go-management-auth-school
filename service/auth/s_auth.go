@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"fmt"
 	"go-management-auth-school/config"
 	authLoginRequest "go-management-auth-school/controller/auth"
 	mappingCourseServices "go-management-auth-school/controller/mapping_course"
@@ -18,6 +19,8 @@ import (
 	// "go-management-auth-school/entity/class"
 	jwthelper "go-management-auth-school/helper/jwt"
 	timeHelper "go-management-auth-school/helper/time"
+
+	// validasiHelper "go-management-auth-school/helper/validasi"
 	userRepo "go-management-auth-school/service/user"
 	"time"
 
@@ -193,16 +196,37 @@ func (service AuthService) RegisterStudent(ctx context.Context, input *userEntit
 func (service AuthService) ValidateToken(ctx context.Context, token string) (data authEntity.AuthValidate, err error){
 	
 	tokenBearer := strings.Split(token, " ")
-	if len(tokenBearer) == 2 {
+	if len(tokenBearer) == 1 {
 		token = tokenBearer[1]
 	}
 
-	_ = func(token *jwt.Token) (interface{}, error) {
-        _, ok := token.Method.(*jwt.SigningMethodHMAC)
-        if !ok {
-            return nil, errors.New("Invalid token")
+	// verify JWT token
+    secretKey := []byte(service.config.JwtAuth.JwtSecretKey)
+    tokenParsed, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, errors.New("unexpected signing method: " + token.Header["alg"].(string))
         }
-        return nil, nil
+        return secretKey, nil
+    })
+
+    if err != nil {
+        // fmt.Println("Error while parsing token: ", err)
+        return
     }
-	return
+
+    if claims, ok := tokenParsed.Claims.(*jwt.StandardClaims); ok && tokenParsed.Valid {
+        // get data from JWT token
+        id := claims.Id
+				fmt.Println("id: ", id)
+
+				// get data from database
+				data.User, err = service.userRepo.FindOne(ctx, &userController.UserParams{
+					IdentityID: id,
+				})
+
+				// get mapping student
+    } else {
+			return data ,errors.New("invalid token")
+    }
+		return 
 }
