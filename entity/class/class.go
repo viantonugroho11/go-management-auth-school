@@ -7,6 +7,7 @@ import (
 type Class struct {
 	ID int `json:"id"`
 	Name string `json:"name"`
+	MajorID int `json:"major_id"`
 	Major majorEntity.Major `json:"major"`
 	Level string `json:"level"`
 }
