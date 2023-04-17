@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-management-auth-school/config"
+	configurable "go-management-auth-school/config"
 	authLoginRequest "go-management-auth-school/controller/auth"
 	mappingCourseServices "go-management-auth-school/controller/mapping_course"
 	mapStudent "go-management-auth-school/controller/mapping_student"
@@ -34,14 +34,14 @@ type authRepository interface {
 
 type AuthService struct {
 	userRepo          userRepo.UserRepo
-	config            config.Config
+	config            configurable.Config
 	mapCourseService  mappingCourseServices.MappingCourseService
 	studentService    studentServices.StudentService
 	mapStudentService mapStudent.MappingStudentService
 	userService       userController.UserService
 }
 
-func NewAuthService(repo userRepo.UserRepo, config config.Config,
+func NewAuthService(repo userRepo.UserRepo, config configurable.Config,
 	mapCourseService mappingCourseServices.MappingCourseService, studentService studentServices.StudentService,
 	mapStudentService mapStudent.MappingStudentService, userService userController.UserService) *AuthService {
 	return &AuthService{
