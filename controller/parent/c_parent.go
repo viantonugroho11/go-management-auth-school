@@ -12,6 +12,7 @@ type ParentService interface {
 	FindAll(ctx context.Context, params *ParentParams) (data []parentEntity.Parent, err error)
 	SelectAll(ctx context.Context, parameter *ParentParams) (data []parentEntity.Parent, err error)
 	FindOne(ctx context.Context, params *ParentParams) (data parentEntity.Parent, err error)
+	Create(ctx context.Context, params *parentEntity.Parent) (err error)
 }
 
 type parentController struct {
