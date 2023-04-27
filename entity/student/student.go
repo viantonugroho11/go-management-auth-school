@@ -3,6 +3,7 @@ package student
 import (
 	"database/sql"
 	"strings"
+	parentEntity "go-management-auth-school/entity/parent"
 )
 
 
@@ -47,6 +48,7 @@ type Student struct {
 
 	UpdatedAt string `json:"UpdatedAt"`
 	DeletedAt sql.NullString `json:"DeletedAt"`
+	Parent []parentEntity.Parent `json:"parent"`
 }
 
 var (
