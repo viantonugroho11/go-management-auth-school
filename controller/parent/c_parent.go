@@ -1,8 +1,17 @@
 package parent
 
-import "github.com/labstack/echo/v4"
+import (
+	"context"
+
+	"github.com/labstack/echo/v4"
+
+	parentEntity "go-management-auth-school/entity/parent"
+)
 
 type ParentService interface {
+	FindAll(ctx context.Context, params *ParentParams) (data []parentEntity.Parent, err error)
+	SelectAll(ctx context.Context, parameter *ParentParams) (data []parentEntity.Parent, err error)
+	FindOne(ctx context.Context, params *ParentParams) (data parentEntity.Parent, err error)
 }
 
 type parentController struct {
