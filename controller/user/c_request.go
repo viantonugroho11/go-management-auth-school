@@ -1,7 +1,10 @@
 package user
 
 import (
+	"fmt"
 	"go-management-auth-school/controller"
+
+	"github.com/go-playground/validator"
 )
 
 
@@ -20,3 +23,15 @@ type UserRequset struct {
 	IdentityID string `json:"identityId" validate:"required"`
 	DeviceID string `json:"deviceId"`
 }
+
+func (u *UserRequset) Validate() error {
+		err := validator.New().Struct(u)
+	if err != nil {
+		for _, er := range err.(validator.ValidationErrors) {
+			return fmt.Errorf("%v %v", er.Field(), er.ActualTag())
+		}
+	}
+	return nil
+}
+
+
