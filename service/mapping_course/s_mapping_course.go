@@ -7,15 +7,11 @@ import (
 	mapCourseEntity "go-management-auth-school/entity/mapping_course"
 )
 
-
-
-
 type MpCourseRepo interface {
 	FindAll(ctx context.Context, params *mapCourseController.MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
 	SelectAll(ctx context.Context, parameter *mapCourseController.MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
 	FindOne(ctx context.Context, params *mapCourseController.MappingCourseParams) (data mapCourseEntity.MappingCourse, err error)
 }
-
 
 type mpCourseService struct {
 	mpCourseRepo MpCourseRepo

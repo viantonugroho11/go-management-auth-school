@@ -16,14 +16,13 @@ import (
 type UserRepo interface {
 	SelectAll(ctx context.Context, parameter *userRequset.UserParams) (data []userEntity.User, err error)
 	FindOne(ctx context.Context, parameter *userRequset.UserParams) (data userEntity.User, err error)
-	Create(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (res string,err error)
-	UpdateUsername(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
-	UpdatePassword(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
+	Create(ctx context.Context, tx *sqlx.Tx, input *userEntity.User) (res string, err error)
+	UpdateUsername(ctx context.Context, tx *sqlx.Tx, input *userEntity.User) (err error)
+	UpdatePassword(ctx context.Context, tx *sqlx.Tx, input *userEntity.User) (err error)
 
-	UpdateLastLogin(ctx context.Context,tx *sqlx.Tx, input *userEntity.User) (err error)
+	UpdateLastLogin(ctx context.Context, tx *sqlx.Tx, input *userEntity.User) (err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
 }
-
 
 type userService struct {
 	userRepo UserRepo
@@ -77,9 +76,8 @@ func (service userService) Create(ctx context.Context, input *userEntity.User) (
 		return
 	}
 
-
 	input.Password = string(hash)
-	tx , err := service.userRepo.CreateTx(ctx)
+	tx, err := service.userRepo.CreateTx(ctx)
 	if err != nil {
 		return
 	}
@@ -108,7 +106,7 @@ func (service userService) UpdateUsername(ctx context.Context, input *userEntity
 		return
 	}
 
-	checkData,err := service.userRepo.FindOne(ctx, &userRequset.UserParams{
+	checkData, err := service.userRepo.FindOne(ctx, &userRequset.UserParams{
 		Username: input.Username,
 	})
 
@@ -119,14 +117,14 @@ func (service userService) UpdateUsername(ctx context.Context, input *userEntity
 		return
 	}
 
-	tx , err := service.userRepo.CreateTx(ctx)
+	tx, err := service.userRepo.CreateTx(ctx)
 	if err != nil {
 		return
 	}
 	defer tx.Rollback()
 	err = service.userRepo.UpdateUsername(ctx, tx, &userEntity.User{
 		IdentityID: input.IdentityID,
-		Username: input.Username,
+		Username:   input.Username,
 	})
 	if err != nil {
 		// logger.ErrorWithStack(ctx, err, "select all user query")
@@ -135,8 +133,5 @@ func (service userService) UpdateUsername(ctx context.Context, input *userEntity
 
 	tx.Commit()
 
-
-	
-	
 	return
 }

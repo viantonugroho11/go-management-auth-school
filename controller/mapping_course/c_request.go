@@ -8,18 +8,17 @@ import (
 	mpCourseEntity "go-management-auth-school/entity/mapping_course"
 )
 
-
 type MappingCourseParams struct {
-	ClassID  string `json:"class_id"`
+	ClassID   string `json:"class_id"`
 	TeacherID string `json:"teacher_id"`
-	LessonID string `json:"lesson_id"`
+	LessonID  string `json:"lesson_id"`
 	controller.DefaultParameter
 }
 
 type MappingCourseRequest struct {
-	ClassID  string `json:"class_id"`
+	ClassID   string `json:"class_id"`
 	TeacherID string `json:"teacher_id"`
-	LessonID string `json:"lesson_id"`
+	LessonID  string `json:"lesson_id"`
 }
 
 func (m *MappingCourseRequest) Validate() error {
@@ -34,9 +33,9 @@ func (m *MappingCourseRequest) Validate() error {
 
 func (m *MappingCourseRequest) ToEntity() (res *mpCourseEntity.MappingCourse) {
 	res = &mpCourseEntity.MappingCourse{
-		ClassID:  m.ClassID,
+		ClassID:   m.ClassID,
 		TeacherID: m.TeacherID,
-		LessonID: m.LessonID,
+		LessonID:  m.LessonID,
 	}
 	return
 }

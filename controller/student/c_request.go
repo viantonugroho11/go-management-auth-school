@@ -21,37 +21,37 @@ type StudentParams struct {
 }
 
 type StudentRequest struct {
-	FirstName string `json:"FirstName"`
-	LastName string `json:"LastName"`
-	Email string `json:"Email"`
-	Nisn string `json:"Nisn" validate:"required"`
-	Nis string `json:"Nis"`
-	Nik string `json:"Nik"`
+	FirstName    string `json:"FirstName"`
+	LastName     string `json:"LastName"`
+	Email        string `json:"Email"`
+	Nisn         string `json:"Nisn" validate:"required"`
+	Nis          string `json:"Nis"`
+	Nik          string `json:"Nik"`
 	PlaceOfBirth string `json:"PlaceOfBirth"`
-	DateOfBirth string `json:"DateOfBirth"`
+	DateOfBirth  string `json:"DateOfBirth"`
 
-	Phone string `json:"Phone"`
-	Address string `json:"Address"`
-	Gender string `json:"Gender"`
-	Religion string `json:"Religion"`
-	Image string `json:"Image"`
-	ProvinceID int `json:"ProvinceID"`
-	CityID int `json:"CityID"`
-	SubdistrictID int `json:"SubdistrictID"`
+	Phone         string `json:"Phone"`
+	Address       string `json:"Address"`
+	Gender        string `json:"Gender"`
+	Religion      string `json:"Religion"`
+	Image         string `json:"Image"`
+	ProvinceID    int    `json:"ProvinceID"`
+	CityID        int    `json:"CityID"`
+	SubdistrictID int    `json:"SubdistrictID"`
 
 	WardID int `json:"WardID"`
-	Rt int `json:"Rt"`
-	Rw int `json:"Rw"`
+	Rt     int `json:"Rt"`
+	Rw     int `json:"Rw"`
 	// PostalCode int `json:"PostalCode"`
 
-	Height int `json:"Height"`
-	Weight int `json:"Weight"`
-	BloodType string `json:"BloodType"`
-	Disability int `json:"Disability"`
+	Height         int    `json:"Height"`
+	Weight         int    `json:"Weight"`
+	BloodType      string `json:"BloodType"`
+	Disability     int    `json:"Disability"`
 	DisabilityInfo string `json:"DisabilityInfo"`
 
 	JoinDate string `json:"JoinDate"`
-	Details string `json:"Details"`
+	Details  string `json:"Details"`
 }
 
 func (i *StudentRequest) Validate() error {
@@ -66,31 +66,31 @@ func (i *StudentRequest) Validate() error {
 
 func (i *StudentRequest) ToService() (res *studentEntity.Student) {
 	res = &studentEntity.Student{
-		FirstName: i.FirstName,
-		LastName: i.LastName,
-		Email: i.Email,
-		Nisn: i.Nisn,
-		Nik: i.Nik,
-		Nis: i.Nis,
-		PlaceOfBirth: i.PlaceOfBirth,
-		DateOfBirth: i.DateOfBirth,
-		Phone: i.Phone,
-		Address: i.Address,
-		Gender: i.Gender,
-		Religion: i.Religion,
-		Image: i.Image,
-		ProvinceID: i.ProvinceID,
-		CityID: i.CityID,
-		SubdistrictID: i.SubdistrictID,
-		WardID: i.WardID,
-		Rt: i.Rt,
-		Rw: i.Rw,
-		Height: i.Height,
-		Weight: i.Weight,
-		BloodType: i.BloodType,
-		Disability: i.Disability,
+		FirstName:      i.FirstName,
+		LastName:       i.LastName,
+		Email:          i.Email,
+		Nisn:           i.Nisn,
+		Nik:            i.Nik,
+		Nis:            i.Nis,
+		PlaceOfBirth:   i.PlaceOfBirth,
+		DateOfBirth:    i.DateOfBirth,
+		Phone:          i.Phone,
+		Address:        i.Address,
+		Gender:         i.Gender,
+		Religion:       i.Religion,
+		Image:          i.Image,
+		ProvinceID:     i.ProvinceID,
+		CityID:         i.CityID,
+		SubdistrictID:  i.SubdistrictID,
+		WardID:         i.WardID,
+		Rt:             i.Rt,
+		Rw:             i.Rw,
+		Height:         i.Height,
+		Weight:         i.Weight,
+		BloodType:      i.BloodType,
+		Disability:     i.Disability,
 		DisabilityInfo: i.DisabilityInfo,
-		Details: i.Details,
+		Details:        i.Details,
 	}
 	return
 

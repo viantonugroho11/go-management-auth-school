@@ -12,7 +12,6 @@ type MajorRepo interface {
 	FindOne(ctx context.Context, params *majorController.MajorParams) (data majorEntity.Major, err error)
 }
 
-
 type majorService struct {
 	majorRepo MajorRepo
 }
@@ -23,7 +22,7 @@ func NewMajorService(repo MajorRepo) *majorService {
 	}
 }
 
-func (service majorService) FindAll(ctx context.Context, params *majorController.MajorParams) (data []majorEntity.Major, err error) {	
+func (service majorService) FindAll(ctx context.Context, params *majorController.MajorParams) (data []majorEntity.Major, err error) {
 	return
 }
 

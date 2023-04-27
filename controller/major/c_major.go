@@ -7,7 +7,6 @@ import (
 	majorEntity "go-management-auth-school/entity/major"
 )
 
-
 type MajorService interface {
 	FindAll(ctx context.Context, params *MajorParams) (data []majorEntity.Major, err error)
 	SelectAll(ctx context.Context, parameter *MajorParams) (data []majorEntity.Major, err error)

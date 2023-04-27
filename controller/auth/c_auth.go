@@ -11,8 +11,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-
-
 type authService interface {
 	Login(ctx context.Context, input *LoginRequest) (data authEntity.Auth, err error)
 	RegisterStudent(ctx context.Context, input *userEntity.User) (data authEntity.Auth, err error)
@@ -49,7 +47,7 @@ func (ctrl authController) Login() echo.HandlerFunc {
 		if err != nil {
 			return err
 		}
-		return response.RespondSuccess(c, 200,FromServiceLogin(data),nil)
+		return response.RespondSuccess(c, 200, FromServiceLogin(data), nil)
 	}
 }
 
@@ -99,4 +97,3 @@ func (ctrl authController) ValidateJWT() echo.HandlerFunc {
 		return nil
 	}
 }
-

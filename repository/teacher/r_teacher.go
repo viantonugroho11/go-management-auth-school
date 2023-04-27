@@ -14,7 +14,7 @@ type teacherRepo struct {
 	DbSlave  *sqlx.DB
 }
 
-func NewTeacherRepo(dbMaster ,dbSlave *sqlx.DB) *teacherRepo {
+func NewTeacherRepo(dbMaster, dbSlave *sqlx.DB) *teacherRepo {
 	return &teacherRepo{
 		DbMaster: dbMaster,
 		DbSlave:  dbSlave,

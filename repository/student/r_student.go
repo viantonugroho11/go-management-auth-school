@@ -13,13 +13,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-
 type studentRepo struct {
 	DbMaster *sqlx.DB
 	DbSlave  *sqlx.DB
 }
 
-func NewStudentRepo(dbMaster ,dbSlave *sqlx.DB) *studentRepo {
+func NewStudentRepo(dbMaster, dbSlave *sqlx.DB) *studentRepo {
 	return &studentRepo{
 		DbMaster: dbMaster,
 		DbSlave:  dbSlave,
@@ -27,7 +26,7 @@ func NewStudentRepo(dbMaster ,dbSlave *sqlx.DB) *studentRepo {
 }
 
 func (repo studentRepo) buildingParams(ctx context.Context, parameter *studentRequset.StudentParams) (conditionString string, conditionParam []interface{}) {
-	
+
 	if parameter.ID != "" {
 		conditionString += " AND def.id = ?"
 		conditionParam = append(conditionParam, parameter.ID)
@@ -57,7 +56,7 @@ func (repo studentRepo) buildingParams(ctx context.Context, parameter *studentRe
 		conditionParam = append(conditionParam, parameter.JoinDate)
 	}
 
-	return 
+	return
 }
 
 func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
@@ -71,19 +70,19 @@ func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 
 func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset.StudentParams) (data []studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` `+studentEntity.GroupStatement+
-	` ORDER BY def.id` + parameter.OrderBy 
+	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + studentEntity.GroupStatement +
+		` ORDER BY def.id` + parameter.OrderBy
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
 	if err != nil {
-		return 
+		return
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		temp := studentEntity.Student{}
-		err = temp.ScanRows(rows,nil)
+		err = temp.ScanRows(rows, nil)
 		if err != nil {
 			return
 		}
@@ -98,9 +97,9 @@ func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset
 	return
 }
 
-func(repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error) {
+func (repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment 
+	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
@@ -112,7 +111,7 @@ func(repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.St
 	return
 }
 
-func (repo studentRepo) Create(ctx context.Context,tx *sqlx.Tx, input *studentEntity.Student) (res string, err error) {
+func (repo studentRepo) Create(ctx context.Context, tx *sqlx.Tx, input *studentEntity.Student) (res string, err error) {
 	query := InsertStudent
 	//convert string to date
 	uuidRandom := uuid.New().String()

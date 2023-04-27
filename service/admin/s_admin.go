@@ -3,7 +3,6 @@ package admin
 type AdminRepo interface {
 }
 
-
 type adminService struct {
 	adminRepo AdminRepo
 }

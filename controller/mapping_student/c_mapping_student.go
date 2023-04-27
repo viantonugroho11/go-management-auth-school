@@ -1,12 +1,11 @@
 package mapping_student
 
 import (
+	"github.com/labstack/echo/v4"
 
-"github.com/labstack/echo/v4"
+	"context"
 
-"context"
-
-mapStudentEntity "go-management-auth-school/entity/mapping_student"
+	mapStudentEntity "go-management-auth-school/entity/mapping_student"
 )
 
 type MappingStudentService interface {

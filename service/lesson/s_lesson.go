@@ -5,7 +5,6 @@ import (
 
 	lessonController "go-management-auth-school/controller/lesson"
 	lessonEntity "go-management-auth-school/entity/lesson"
-
 )
 
 type LessonRepo interface {
@@ -13,7 +12,6 @@ type LessonRepo interface {
 	SelectAll(ctx context.Context, parameter *lessonController.LessonParams) (data []lessonEntity.Lesson, err error)
 	FindOne(ctx context.Context, params *lessonController.LessonParams) (data lessonEntity.Lesson, err error)
 }
-
 
 type lessonService struct {
 	lessonRepo LessonRepo
@@ -24,7 +22,6 @@ func NewLessonService(repo LessonRepo) *lessonService {
 		lessonRepo: repo,
 	}
 }
-
 
 func (service lessonService) FindAll(ctx context.Context, params *lessonController.LessonParams) (data []lessonEntity.Lesson, err error) {
 	return

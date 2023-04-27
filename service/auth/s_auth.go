@@ -102,8 +102,6 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 
 	tx.Commit()
 
-
-
 	data = authEntity.Auth{
 		Indentity: dataUser.IdentityID,
 		IsActive:  dataUser.Status,
@@ -192,41 +190,40 @@ func (service AuthService) RegisterStudent(ctx context.Context, input *userEntit
 	return
 }
 
+func (service AuthService) ValidateToken(ctx context.Context, token string) (data authEntity.AuthValidate, err error) {
 
-func (service AuthService) ValidateToken(ctx context.Context, token string) (data authEntity.AuthValidate, err error){
-	
 	tokenBearer := strings.Split(token, " ")
 	if len(tokenBearer) == 1 {
 		token = tokenBearer[1]
 	}
 
 	// verify JWT token
-    secretKey := []byte(service.config.JwtAuth.JwtSecretKey)
-    tokenParsed, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-            return nil, errors.New("unexpected signing method: " + token.Header["alg"].(string))
-        }
-        return secretKey, nil
-    })
+	secretKey := []byte(service.config.JwtAuth.JwtSecretKey)
+	tokenParsed, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method: " + token.Header["alg"].(string))
+		}
+		return secretKey, nil
+	})
 
-    if err != nil {
-        // fmt.Println("Error while parsing token: ", err)
-        return
-    }
+	if err != nil {
+		// fmt.Println("Error while parsing token: ", err)
+		return
+	}
 
-    if claims, ok := tokenParsed.Claims.(*jwt.StandardClaims); ok && tokenParsed.Valid {
-        // get data from JWT token
-        id := claims.Id
-				fmt.Println("id: ", id)
+	if claims, ok := tokenParsed.Claims.(*jwt.StandardClaims); ok && tokenParsed.Valid {
+		// get data from JWT token
+		id := claims.Id
+		fmt.Println("id: ", id)
 
-				// get data from database
-				data.User, err = service.userRepo.FindOne(ctx, &userController.UserParams{
-					IdentityID: id,
-				})
+		// get data from database
+		data.User, err = service.userRepo.FindOne(ctx, &userController.UserParams{
+			IdentityID: id,
+		})
 
-				// get mapping student
-    } else {
-			return data ,errors.New("invalid token")
-    }
-		return 
+		// get mapping student
+	} else {
+		return data, errors.New("invalid token")
+	}
+	return
 }

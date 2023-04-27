@@ -8,7 +8,6 @@ import (
 	lessonEntity "go-management-auth-school/entity/lesson"
 )
 
-
 type LessonParams struct {
 	controller.DefaultParameter
 }

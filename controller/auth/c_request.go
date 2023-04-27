@@ -6,18 +6,17 @@ import (
 	userEntity "go-management-auth-school/entity/user"
 )
 
-
 type LoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
 type RegisterRequest struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	Username   string `json:"username" validate:"required"`
+	Password   string `json:"password" validate:"required"`
 	RePassword string `json:"rePassword" validate:"required,eqfield=Password"`
 	IdentityID string `json:"identityId" validate:"required"`
-	DeviceID string `json:"deviceId"`
+	DeviceID   string `json:"deviceId"`
 }
 
 func (i *LoginRequest) Validate() error {
@@ -42,10 +41,10 @@ func (i *RegisterRequest) Validate() error {
 
 func (i *RegisterRequest) ToService() (res *userEntity.User) {
 	res = &userEntity.User{
-		Username: i.Username,
-		Password: i.Password,
+		Username:   i.Username,
+		Password:   i.Password,
 		IdentityID: i.IdentityID,
-		DeviceID: i.DeviceID,
+		DeviceID:   i.DeviceID,
 	}
 	return res
 }

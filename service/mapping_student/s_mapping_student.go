@@ -1,11 +1,10 @@
 package mapping_student
 
 import (
+	"context"
 
-"context"
-
-mapStudentController "go-management-auth-school/controller/mapping_student"
-mapStudentEntity "go-management-auth-school/entity/mapping_student"
+	mapStudentController "go-management-auth-school/controller/mapping_student"
+	mapStudentEntity "go-management-auth-school/entity/mapping_student"
 )
 
 type MpStudentRepo interface {
@@ -13,7 +12,6 @@ type MpStudentRepo interface {
 	SelectAll(ctx context.Context, parameter *mapStudentController.MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error)
 	FindOne(ctx context.Context, params *mapStudentController.MappingStudentParams) (data mapStudentEntity.MappingStudent, err error)
 }
-
 
 type mpStudentService struct {
 	mpStudentRepo MpStudentRepo

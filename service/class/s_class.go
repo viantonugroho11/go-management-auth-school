@@ -4,7 +4,6 @@ import (
 	"context"
 	classController "go-management-auth-school/controller/class"
 	classEntity "go-management-auth-school/entity/class"
-
 )
 
 type ClassRepo interface {
@@ -12,7 +11,6 @@ type ClassRepo interface {
 	SelectAll(ctx context.Context, parameter *classController.ClassParams) (data []classEntity.Class, err error)
 	FindOne(ctx context.Context, params *classController.ClassParams) (data classEntity.Class, err error)
 }
-
 
 type classService struct {
 	classRepo ClassRepo

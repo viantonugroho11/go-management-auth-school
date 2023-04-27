@@ -13,9 +13,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-
 type StudentService interface {
-
 	SelectAll(ctx context.Context, parameter *StudentParams) (data []studentEntity.Student, err error)
 	FindOne(ctx context.Context, parameter *StudentParams) (data studentEntity.Student, err error)
 	Create(ctx context.Context, parameter *studentEntity.Student) (err error)
@@ -36,13 +34,13 @@ func (ctrl studentController) InitializeRoutes(userRouter *echo.Group, adminRout
 	userRouter.POST("", ctrl.CreateStudent())
 }
 
-func (ctrl studentController) GetStudent() echo.HandlerFunc{
+func (ctrl studentController) GetStudent() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		if ctx == nil {
 			ctx = context.Background()
 		}
-		
+
 		params := new(StudentParams)
 		params.ID = c.QueryParam("id")
 		params.Nik = c.QueryParam("nik")
@@ -53,26 +51,26 @@ func (ctrl studentController) GetStudent() echo.HandlerFunc{
 		log.Println(params)
 		data, err := ctrl.studentServices.SelectAll(ctx, params)
 		if err != nil {
-			return response.RespondError(c,http.StatusBadRequest, err)
+			return response.RespondError(c, http.StatusBadRequest, err)
 		}
-		return response.RespondSuccess(c,http.StatusOK, FromServices(data),nil)
-	}	
+		return response.RespondSuccess(c, http.StatusOK, FromServices(data), nil)
+	}
 }
 
-func(ctrl studentController) CreateStudent() echo.HandlerFunc{
+func (ctrl studentController) CreateStudent() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		if ctx == nil {
 			ctx = context.Background()
 		}
-		
+
 		reqStudent := new(StudentRequest)
 		if err := c.Bind(reqStudent); err != nil {
 			return err
 		}
 
 		if err := reqStudent.Validate(); err != nil {
-			return response.RespondError(c,http.StatusBadRequest, err)
+			return response.RespondError(c, http.StatusBadRequest, err)
 		}
 
 		reqData := reqStudent.ToService()
@@ -81,6 +79,6 @@ func(ctrl studentController) CreateStudent() echo.HandlerFunc{
 		if err != nil {
 			return err
 		}
-		return response.RespondSuccess(c,http.StatusCreated, nil,nil)
-	}	
+		return response.RespondSuccess(c, http.StatusCreated, nil, nil)
+	}
 }

@@ -8,8 +8,6 @@ import (
 	teacherEntity "go-management-auth-school/entity/teacher"
 )
 
-
-
 type TeacherService interface {
 	FindAll(ctx context.Context, params *TeacherParams) (data []teacherEntity.Teacher, err error)
 	SelectAll(ctx context.Context, parameter *TeacherParams) (data []teacherEntity.Teacher, err error)
@@ -29,5 +27,3 @@ func NewTeacherController(service TeacherService) *teacherController {
 func (ctrl teacherController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 
 }
-
-

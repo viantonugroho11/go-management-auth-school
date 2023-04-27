@@ -11,11 +11,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-
 type StudentRepo interface {
 	SelectAll(ctx context.Context, parameter *studentRequset.StudentParams) (data []studentEntity.Student, err error)
 	FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error)
-	Create(ctx context.Context,tx *sqlx.Tx, input *studentEntity.Student) (res string, err error)
+	Create(ctx context.Context, tx *sqlx.Tx, input *studentEntity.Student) (res string, err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
 }
 
@@ -41,7 +40,6 @@ func (service studentService) SelectAll(ctx context.Context, parameter *studentR
 	return
 }
 
-
 func (service studentService) FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error) {
 	data, err = service.studentRepo.FindOne(ctx, parameter)
 	if err != nil {
@@ -53,7 +51,7 @@ func (service studentService) FindOne(ctx context.Context, parameter *studentReq
 
 func (service studentService) Create(ctx context.Context, input *studentEntity.Student) (err error) {
 	checkStudent, err := service.studentRepo.SelectAll(ctx, &studentRequset.StudentParams{
-		Nis: input.Nis,
+		Nis:  input.Nis,
 		Nisn: input.Nisn,
 	})
 	if err != nil {
@@ -77,4 +75,3 @@ func (service studentService) Create(ctx context.Context, input *studentEntity.S
 	tx.Commit()
 	return
 }
-

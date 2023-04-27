@@ -1,7 +1,6 @@
 package teacher
 
 import (
-	
 	"context"
 
 	teacherController "go-management-auth-school/controller/teacher"
@@ -13,7 +12,6 @@ type TeacherRepo interface {
 	SelectAll(ctx context.Context, parameter *teacherController.TeacherParams) (data []teacherEntity.Teacher, err error)
 	FindOne(ctx context.Context, params *teacherController.TeacherParams) (data teacherEntity.Teacher, err error)
 }
-
 
 type teacherService struct {
 	teacherRepo TeacherRepo
