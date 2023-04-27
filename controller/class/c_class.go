@@ -1,9 +1,17 @@
 package class
 
-import "github.com/labstack/echo/v4"
+import (
+	"context"
+
+	"github.com/labstack/echo/v4"
+
+	classEntity "go-management-auth-school/entity/class"
+)
 
 type ClassService interface {
-	// FindOne(id int)
+	FindAll(ctx context.Context, params *ClassParams) (data []classEntity.Class, err error)
+	SelectAll(ctx context.Context, parameter *ClassParams) (data []classEntity.Class, err error)
+	FindOne(ctx context.Context, params *ClassParams) (data classEntity.Class, err error)
 }
 
 type classController struct {
