@@ -3,10 +3,19 @@ package parent
 import (
 	"fmt"
 
-	"github.com/go-playground/validator"
+	"go-management-auth-school/controller"
 	parentEntity "go-management-auth-school/entity/parent"
+
+	"github.com/go-playground/validator"
 )
 
+
+type ParentParams struct {
+	StudentID string `json:"student_id"`
+	Gender int `json:"gender"`
+	Type string `json:"type"`
+	controller.DefaultParameter
+}
 
 type ParentRequest struct {
 	FirstName string `json:"first_name"`
