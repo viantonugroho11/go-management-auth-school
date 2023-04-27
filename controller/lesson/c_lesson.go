@@ -1,8 +1,17 @@
 package lesson
 
-import "github.com/labstack/echo/v4"
+import (
+	"context"
+
+	"github.com/labstack/echo/v4"
+
+	lessonEntity "go-management-auth-school/entity/lesson"
+)
 
 type LessonService interface {
+	FindAll(ctx context.Context, params *LessonParams) (data []lessonEntity.Lesson, err error)
+	SelectAll(ctx context.Context, parameter *LessonParams) (data []lessonEntity.Lesson, err error)
+	FindOne(ctx context.Context, params *LessonParams) (data lessonEntity.Lesson, err error)
 }
 
 type lessonController struct {
