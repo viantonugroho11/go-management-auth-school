@@ -9,23 +9,25 @@ import (
 	"github.com/go-playground/validator"
 )
 
-
 type ParentParams struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 	StudentID string `json:"student_id"`
-	Gender int `json:"gender"`
-	Type string `json:"type"`
+	NIK 		 string `json:"nik"`
+	Gender    int    `json:"gender"`
+	Type      string `json:"type"`
 	controller.DefaultParameter
 }
 
 type ParentRequest struct {
 	FirstName string `json:"first_name"`
-	LastName string `json:"last_name"`
-	Type string `json:"type"`
-	Gender int `json:"gender"`
-	Phone string `json:"phone"`
-	WorkID int `json:"work_id"`
-	Income int `json:"income"`
-	Image string `json:"image"`
+	LastName  string `json:"last_name"`
+	Type      string `json:"type"`
+	Gender    int    `json:"gender"`
+	Phone     string `json:"phone"`
+	WorkID    int    `json:"work_id"`
+	Income    int    `json:"income"`
+	Image     string `json:"image"`
 	StudentID string `json:"student_id"`
 }
 
@@ -42,13 +44,13 @@ func (i *ParentRequest) Validate() error {
 func (i *ParentRequest) ToEntity() (res *parentEntity.Parent) {
 	res = &parentEntity.Parent{
 		FirstName: i.FirstName,
-		LastName: i.LastName,
-		WorkID: i.WorkID,
-		Gender: i.Gender,
-		Phone: i.Phone,
-		Image: i.Image,
-		Type: i.Type,
-		Income: i.Income,
+		LastName:  i.LastName,
+		WorkID:    i.WorkID,
+		Gender:    i.Gender,
+		Phone:     i.Phone,
+		Image:     i.Image,
+		Type:      i.Type,
+		Income:    i.Income,
 		StudentID: i.StudentID,
 	}
 	return
