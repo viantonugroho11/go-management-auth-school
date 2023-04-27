@@ -1,14 +1,17 @@
 package mapping_course
 
-import "github.com/labstack/echo/v4"
+import (
+	"context"
 
-// "context"
-// mapCourseEntity "go-management-auth-school/entity/mapping_course"
+	"github.com/labstack/echo/v4"
+
+	mapCourseEntity "go-management-auth-school/entity/mapping_course"
+)
 
 type MappingCourseService interface {
-	// FindAll(ctx context.Context, params *MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
-	// SelectAll(ctx context.Context, parameter *MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
-	// FindOne(ctx context.Context, params *MappingCourseParams) (data mapCourseEntity.MappingCourse, err error)
+	FindAll(ctx context.Context, params *MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
+	SelectAll(ctx context.Context, parameter *MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
+	FindOne(ctx context.Context, params *MappingCourseParams) (data mapCourseEntity.MappingCourse, err error)
 }
 
 type mappingCourseController struct {
