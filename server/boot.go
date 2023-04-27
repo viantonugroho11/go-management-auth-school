@@ -45,6 +45,10 @@ import (
 	studentController "go-management-auth-school/controller/student"
 	studentRepository "go-management-auth-school/repository/student"
 	studentServices "go-management-auth-school/service/student"
+
+	teacherController "go-management-auth-school/controller/teacher"
+	teacherRepository "go-management-auth-school/repository/teacher"
+	teacherServices "go-management-auth-school/service/teacher"
 )
 
 
@@ -95,6 +99,7 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	userRepo := userRepository.NewUserRepo(config.MasterDB, config.SlaveDB)
 	parentRepo := parentRepository.NewParentRepo(config.MasterDB, config.SlaveDB)
 	studentRepo := studentRepository.NewStudentRepo(config.MasterDB, config.SlaveDB)
+	teacherRepo := teacherRepository.NewTeacherRepo(config.MasterDB, config.SlaveDB)
 
 
 	adminService := adminServices.NewAdminService(adminRepo)
@@ -108,6 +113,7 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 
 	studentService := studentServices.NewStudentService(studentRepo)
 	authService := authServices.NewAuthService(userRepo, conf, mapCourseService, studentService, mappingStudentService, userService)
+	teacherService := teacherServices.NewTeacherService(teacherRepo)
 
 
 	adminRouter := "/admin"
@@ -189,6 +195,14 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	studentAuthRouter := apiAuthV1.Group(studentRouter)
 	studentControllers := studentController.NewStudentController(studentService)
 	studentControllers.InitializeRoutes(studentUserRouter, studentAdminRouter, studentStaticRouter, studentAuthRouter)
+
+	teacherRouter := "/teacher"
+	teacherUserRouter := apiUserV1.Group(teacherRouter)
+	teacherAdminRouter := apiAdminV1.Group(teacherRouter)
+	teacherStaticRouter := apiStaticv1.Group(teacherRouter)
+	teacherAuthRouter := apiAuthV1.Group(teacherRouter)
+	teacherControllers := teacherController.NewTeacherController(teacherService)
+	teacherControllers.InitializeRoutes(teacherUserRouter, teacherAdminRouter, teacherStaticRouter, teacherAuthRouter)
 
 
 
