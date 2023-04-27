@@ -5,42 +5,40 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	authServices "go-management-auth-school/service/auth"
 	authController "go-management-auth-school/controller/auth"
+	authServices "go-management-auth-school/service/auth"
 
+	adminController "go-management-auth-school/controller/admin"
 	adminRepository "go-management-auth-school/repository/admin"
 	adminServices "go-management-auth-school/service/admin"
-	adminController "go-management-auth-school/controller/admin"
 
+	classController "go-management-auth-school/controller/class"
 	classRepository "go-management-auth-school/repository/class"
 	classServices "go-management-auth-school/service/class"
-	classController "go-management-auth-school/controller/class"
 
-	
-
+	lessonController "go-management-auth-school/controller/lesson"
 	lessonRepository "go-management-auth-school/repository/lesson"
 	lessonServices "go-management-auth-school/service/lesson"
-	lessonController "go-management-auth-school/controller/lesson"
 
+	majorController "go-management-auth-school/controller/major"
 	majorRepository "go-management-auth-school/repository/major"
 	majorServices "go-management-auth-school/service/major"
-	majorController "go-management-auth-school/controller/major"
 
+	mappingCourseController "go-management-auth-school/controller/mapping_course"
 	mappingCourseRepository "go-management-auth-school/repository/mapping_course"
 	mappingCourseServices "go-management-auth-school/service/mapping_course"
-	mappingCourseController "go-management-auth-school/controller/mapping_course"
 
+	mappingStudentController "go-management-auth-school/controller/mapping_student"
 	mappingStudentRepository "go-management-auth-school/repository/mapping_student"
 	mappingStudentServices "go-management-auth-school/service/mapping_student"
-	mappingStudentController "go-management-auth-school/controller/mapping_student"
 
+	parentController "go-management-auth-school/controller/parent"
 	parentRepository "go-management-auth-school/repository/parent"
 	parentServices "go-management-auth-school/service/parent"
-	parentController "go-management-auth-school/controller/parent"
 
+	userController "go-management-auth-school/controller/user"
 	userRepository "go-management-auth-school/repository/user"
 	userServices "go-management-auth-school/service/user"
-	userController "go-management-auth-school/controller/user"
 
 	studentController "go-management-auth-school/controller/student"
 	studentRepository "go-management-auth-school/repository/student"
@@ -51,17 +49,13 @@ import (
 	teacherServices "go-management-auth-school/service/teacher"
 )
 
-
 func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 
 	config.MasterDB = config.SetupMasterDB(conf)
 	// setup slave db
 	config.SlaveDB = config.SetupSlaveDB(conf)
 
-
-
 	v1 := router.Group("/v1")
-
 
 	// v2 := router.Group("/v2")
 
@@ -70,7 +64,6 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	apiAdminV1 := v1.Group("/apiAdmin")
 	apiAuthV1 := v1.Group("/apiAuth")
 	apiStaticv1 := v1.Group("/apiStatic")
-
 
 	apiUserV1.GET("/health", func(c echo.Context) error {
 		return c.JSON(200, "OK")
@@ -88,8 +81,6 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 		return c.JSON(200, "OK")
 	})
 
-
-
 	adminRepo := adminRepository.NewAdminRepo(config.MasterDB, config.SlaveDB)
 	classRepo := classRepository.NewClassRepo(config.MasterDB, config.SlaveDB)
 	lessonRepo := lessonRepository.NewLessonRepo(config.MasterDB, config.SlaveDB)
@@ -101,7 +92,6 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	studentRepo := studentRepository.NewStudentRepo(config.MasterDB, config.SlaveDB)
 	teacherRepo := teacherRepository.NewTeacherRepo(config.MasterDB, config.SlaveDB)
 
-
 	adminService := adminServices.NewAdminService(adminRepo)
 	classService := classServices.NewClassService(classRepo)
 	lessonService := lessonServices.NewLessonService(lessonRepo)
@@ -109,12 +99,10 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	mapCourseService := mappingCourseServices.NewMappingCourseService(mpCourseRepo)
 	mappingStudentService := mappingStudentServices.NewMappingStudentService(mpStudentRepo)
 	userService := userServices.NewUserService(userRepo)
-	parentService := parentServices.NewParentService(parentRepo)
-
 	studentService := studentServices.NewStudentService(studentRepo)
+	parentService := parentServices.NewParentService(parentRepo,studentService)
 	authService := authServices.NewAuthService(userRepo, conf, mapCourseService, studentService, mappingStudentService, userService)
 	teacherService := teacherServices.NewTeacherService(teacherRepo)
-
 
 	adminRouter := "/admin"
 	adminUserRouter := apiUserV1.Group(adminRouter)
@@ -204,13 +192,10 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	teacherControllers := teacherController.NewTeacherController(teacherService)
 	teacherControllers.InitializeRoutes(teacherUserRouter, teacherAdminRouter, teacherStaticRouter, teacherAuthRouter)
 
-
-
 	// v2 api group
 	// apiUserV2 := v2.Group("/apiUser")
 	// apiAdminV2 := v2.Group("/apiAdmin")
 	// apiAuthV2 := v2.Group("/apiAuth")
 	// apiStaticv2 := v2.Group("/apiStatic")
-
 
 }
