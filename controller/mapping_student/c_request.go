@@ -32,8 +32,8 @@ func (m *MappingStudentRequest) Validate() error {
 	return nil
 }
 
-func (m *MappingStudentRequest) ToEntity() (res *mapStudentEntity.MappingStudent) {
-	res = &mapStudentEntity.MappingStudent{
+func (m *MappingStudentRequest) ToService() (res *mapStudentEntity.MappingStudentReq) {
+	res = &mapStudentEntity.MappingStudentReq{
 		Indentity: m.Indentity,
 		Type:      m.Type,
 		ClassID:   m.ClassID,
