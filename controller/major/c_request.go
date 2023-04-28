@@ -26,7 +26,7 @@ func (i *MajorRequest) Validate() error {
 	return nil
 }
 
-func (i *MajorRequest) ToEntity() (res *majorEntity.Major) {
+func (i *MajorRequest) ToService() (res *majorEntity.Major) {
 	res = &majorEntity.Major{
 		Name: i.Name,
 	}

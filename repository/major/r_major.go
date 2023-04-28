@@ -2,6 +2,7 @@ package major
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/jmoiron/sqlx"
 
@@ -22,17 +23,77 @@ func NewMajorRepo(dbMaster ,dbSlave *sqlx.DB) *majorRepo {
 	}
 }
 
+func (repo majorRepo) buildingParams(ctx context.Context, parameter *majorController.MajorParams) (conditionString string, conditionParam []interface{}) {
+
+	if parameter.ID != "" {
+		conditionString += " AND def.id = ?"
+		conditionParam = append(conditionParam, parameter.ID)
+	}
+
+	return
+}
+
 func (repo majorRepo) FindAll(ctx context.Context, params *majorController.MajorParams) (data []majorEntity.Major, err error) {
 	// build query here
 	return
 }
 
 func (repo majorRepo) SelectAll(ctx context.Context, parameter *majorController.MajorParams) (data []majorEntity.Major, err error) {
-	// build query here
+	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
+	query := majorEntity.Select + ` WHERE def.deleted_at IS NULL ` + whereStatment
+
+	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
+	if err != nil {
+		return nil,err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		d := majorEntity.Major{}
+		err = d.ScanRows(rows, nil)
+		if err != nil {
+			return nil, err
+		}
+		data = append(data, d)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return
+	}
+
+
 	return
 }
 
 func (repo majorRepo) FindOne(ctx context.Context, params *majorController.MajorParams) (data majorEntity.Major, err error) {
-	// build query here
+	whereStatment, conditionParam := repo.buildingParams(ctx, params)
+	query := majorEntity.Select + ` WHERE def.deleted_at IS NULL ` + whereStatment
+	
+	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
+	err = data.ScanRows(nil, row)
+	if err != nil {
+		return data,err
+	}
+
+
+
+	return
+}
+
+func (repo majorRepo) Create(ctx context.Context, tx *sqlx.Tx, params *majorEntity.Major) (err error) {
+	queries := InsertMajor
+	_,err = tx.QueryContext(ctx, queries, params.Name)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (repo majorRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
+	tx, err = repo.DbMaster.BeginTxx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return
+	}
 	return
 }
