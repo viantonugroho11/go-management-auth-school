@@ -32,7 +32,7 @@ func (i *ClassRequest) Validate() error {
 	return nil
 }
 
-func (i *ClassRequest) ToEntity() (res *classEntity.Class) {
+func (i *ClassRequest) ToService() (res *classEntity.Class) {
 	res = &classEntity.Class{
 		Name:  i.Name,
 		MajorID: i.Major,
