@@ -14,6 +14,7 @@ type LessonParams struct {
 
 type LessonRequest struct {
 	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 func (i *LessonRequest) Validate() error {
@@ -26,9 +27,10 @@ func (i *LessonRequest) Validate() error {
 	return nil
 }
 
-func (i *LessonRequest) ToEntity() (res *lessonEntity.Lesson) {
+func (i *LessonRequest) ToService() (res *lessonEntity.Lesson) {
 	res = &lessonEntity.Lesson{
 		Name: i.Name,
+		Type: i.Type,
 	}
 	return
 }
