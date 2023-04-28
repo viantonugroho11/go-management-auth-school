@@ -6,13 +6,13 @@ import (
 )
 
 type MappingCourseResponse struct {
-	ID         int    `json:"id"`
-	ClassID    string    `json:"class_id"`
-	Class      string `json:"class"`
-	LessonID   string    `json:"lesson_id"`
-	Lesson     string `json:"lesson"`
-	TeacherID  string    `json:"teacher_id"`
-	Teacher    string `json:"teacher"`
+	ID        string `json:"id"`
+	ClassID   string `json:"class_id"`
+	Class     string `json:"class"`
+	LessonID  string `json:"lesson_id"`
+	Lesson    string `json:"lesson"`
+	TeacherID string `json:"teacher_id"`
+	Teacher   string `json:"teacher"`
 }
 
 func FromServices(res []mapCourseEntity.MappingCourse) (data []MappingCourseResponse) {
@@ -24,13 +24,13 @@ func FromServices(res []mapCourseEntity.MappingCourse) (data []MappingCourseResp
 
 func FromService(res mapCourseEntity.MappingCourse) (data MappingCourseResponse) {
 	data = MappingCourseResponse{
-		ID:         res.ID,
-		ClassID:    res.ClassID,
-		Class:      res.Class.Name,
-		LessonID:   res.LessonID,
-		Lesson:     res.Lesson.Name,
-		TeacherID:  res.TeacherID,
-		Teacher:    helperStr.GetFullNameTeacher(res.Teacher),
+		ID:        res.ID,
+		ClassID:   res.ClassID,
+		Class:     res.Class.Name,
+		LessonID:  res.LessonID,
+		Lesson:    res.Lesson.Name,
+		TeacherID: res.TeacherID,
+		Teacher:   helperStr.GetFullNameTeacher(res.Teacher),
 	}
 	return
 }

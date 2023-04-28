@@ -31,8 +31,8 @@ func (m *MappingCourseRequest) Validate() error {
 	return nil
 }
 
-func (m *MappingCourseRequest) ToEntity() (res *mpCourseEntity.MappingCourse) {
-	res = &mpCourseEntity.MappingCourse{
+func (m *MappingCourseRequest) ToService() (res *mpCourseEntity.MappingCourseReq) {
+	res = &mpCourseEntity.MappingCourseReq{
 		ClassID:   m.ClassID,
 		TeacherID: m.TeacherID,
 		LessonID:  m.LessonID,
