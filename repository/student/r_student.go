@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	studentRequset "go-management-auth-school/controller/student"
+	studentRequest "go-management-auth-school/controller/student"
 	studentEntity "go-management-auth-school/entity/student"
 
 	// "go-management-auth-school/helper/database"
@@ -25,39 +25,7 @@ func NewStudentRepo(dbMaster, dbSlave *sqlx.DB) *studentRepo {
 	}
 }
 
-func (repo studentRepo) buildingParams(ctx context.Context, parameter *studentRequset.StudentParams) (conditionString string, conditionParam []interface{}) {
 
-	if parameter.ID != "" {
-		conditionString += " AND def.id = ?"
-		conditionParam = append(conditionParam, parameter.ID)
-	}
-	if parameter.Nik != "" {
-		conditionString += " AND def.nik = ?"
-		conditionParam = append(conditionParam, parameter.Nik)
-	}
-	if parameter.Nisn != "" {
-		conditionString += " AND def.nisn = ?"
-		conditionParam = append(conditionParam, parameter.Nisn)
-	}
-	if parameter.Nis != "" {
-		conditionString += " AND def.nis = ?"
-		conditionParam = append(conditionParam, parameter.Nis)
-	}
-	if parameter.FirstName != "" {
-		conditionString += " AND def.first_name = ?"
-		conditionParam = append(conditionParam, parameter.FirstName)
-	}
-	if parameter.LastName != "" {
-		conditionString += " AND def.last_name = ?"
-		conditionParam = append(conditionParam, parameter.LastName)
-	}
-	if parameter.JoinDate != "" {
-		conditionString += " AND def.join_date = ?"
-		conditionParam = append(conditionParam, parameter.JoinDate)
-	}
-
-	return
-}
 
 func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	tx, err = repo.DbMaster.BeginTxx(ctx, &sql.TxOptions{})
@@ -68,7 +36,7 @@ func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	return
 }
 
-func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset.StudentParams) (data []studentEntity.Student, err error) {
+func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequest.StudentParams) (data []studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
 	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + studentEntity.GroupStatement +
 		` ORDER BY def.id` + parameter.OrderBy
@@ -97,7 +65,7 @@ func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequset
 	return
 }
 
-func (repo studentRepo) FindOne(ctx context.Context, parameter *studentRequset.StudentParams) (data studentEntity.Student, err error) {
+func (repo studentRepo) FindOne(ctx context.Context, parameter *studentRequest.StudentParams) (data studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
 	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
