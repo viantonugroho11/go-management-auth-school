@@ -10,6 +10,7 @@ type Lesson struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
+
 var (
 	Table = "lesson"
 
@@ -24,7 +25,6 @@ func (lesson *Lesson) ScanRows(rows *sql.Rows, row *sql.Row) error {
 	parameter := []interface{}{&lesson.ID, &lesson.Name, &lesson.Type}
 	if rows != nil {
 		return rows.Scan(parameter...)
-	} 
-		return row.Scan(parameter...)
+	}
+	return row.Scan(parameter...)
 }
-

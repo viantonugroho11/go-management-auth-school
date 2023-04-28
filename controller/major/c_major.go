@@ -34,7 +34,7 @@ func (ctrl majorController) InitializeRoutes(userRouter *echo.Group, adminRouter
 }
 
 // get all major
-func(ctrl majorController) SelectAll() echo.HandlerFunc {
+func (ctrl majorController) SelectAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		params := new(MajorParams)
@@ -46,12 +46,12 @@ func(ctrl majorController) SelectAll() echo.HandlerFunc {
 			return response.RespondError(c, 400, err)
 		}
 		return response.RespondSuccess(c, 200, FromServices(data), nil)
-		
+
 	}
 }
 
 // get one major
-func(ctrl majorController) FindOne() echo.HandlerFunc {
+func (ctrl majorController) FindOne() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		params := new(MajorParams)
@@ -63,12 +63,12 @@ func(ctrl majorController) FindOne() echo.HandlerFunc {
 			return response.RespondError(c, 400, err)
 		}
 		return response.RespondSuccess(c, 200, FromService(data), nil)
-		
+
 	}
 }
 
 // create major
-func(ctrl majorController) Create() echo.HandlerFunc {
+func (ctrl majorController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		params := new(MajorRequest)
@@ -87,6 +87,6 @@ func(ctrl majorController) Create() echo.HandlerFunc {
 			return response.RespondError(c, 400, err)
 		}
 		return response.RespondSuccess(c, 200, nil, nil)
-		
+
 	}
 }

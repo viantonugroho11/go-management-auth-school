@@ -11,7 +11,6 @@ type ClassResponse struct {
 	Level string `json:"level"`
 }
 
-
 func FromServices(res []classEntity.Class) (data []ClassResponse) {
 	for _, v := range res {
 		data = append(data, FromService(v))

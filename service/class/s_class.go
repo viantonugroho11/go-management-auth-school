@@ -14,7 +14,6 @@ type ClassRepo interface {
 	FindOne(ctx context.Context, params *classController.ClassParams) (data classEntity.Class, err error)
 	Create(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
-
 }
 
 type classService struct {
@@ -32,7 +31,7 @@ func (service classService) FindAll(ctx context.Context, params *classController
 }
 
 func (service classService) SelectAll(ctx context.Context, parameter *classController.ClassParams) (data []classEntity.Class, err error) {
-	data , err = service.classRepo.SelectAll(ctx, parameter)
+	data, err = service.classRepo.SelectAll(ctx, parameter)
 	if err != nil {
 		return data, err
 	}
@@ -40,7 +39,7 @@ func (service classService) SelectAll(ctx context.Context, parameter *classContr
 }
 
 func (service classService) FindOne(ctx context.Context, params *classController.ClassParams) (data classEntity.Class, err error) {
-	data , err = service.classRepo.FindOne(ctx, params)
+	data, err = service.classRepo.FindOne(ctx, params)
 	if err != nil {
 		return data, err
 	}

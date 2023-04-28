@@ -1,26 +1,26 @@
 package mapping_student
 
 import (
-	mapStudentEntity "go-management-auth-school/entity/mapping_student"
 	mapCourseEntity "go-management-auth-school/entity/mapping_course"
+	mapStudentEntity "go-management-auth-school/entity/mapping_student"
 	helperStr "go-management-auth-school/helper/str"
 )
 
 type MappingStudentResponse struct {
-	ID        int    `json:"id"`
-	ClassID   string `json:"class_id"`
-	Class     string `json:"class"`
-	StudentID string `json:"student_id"`
-	Student   string `json:"student"`
-	TeacherID string `json:"teacher_id"`
-	Teacher   string `json:"teacher"`
-	Type 		  string `json:"type"`
-	Course 		[]CourseResponse `json:"course"`
+	ID        int              `json:"id"`
+	ClassID   string           `json:"class_id"`
+	Class     string           `json:"class"`
+	StudentID string           `json:"student_id"`
+	Student   string           `json:"student"`
+	TeacherID string           `json:"teacher_id"`
+	Teacher   string           `json:"teacher"`
+	Type      string           `json:"type"`
+	Course    []CourseResponse `json:"course"`
 }
 
 type CourseResponse struct {
-	ID        string    `json:"id"`
-	Name      string `json:"name"`
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func FromServices(res []mapStudentEntity.MappingStudent) (data []MappingStudentResponse) {
@@ -39,8 +39,8 @@ func FromService(res mapStudentEntity.MappingStudent) (data MappingStudentRespon
 		Student:   helperStr.GetFullNameStudent(res.Student),
 		TeacherID: res.Teacher.ID,
 		Teacher:   helperStr.GetFullNameTeacher(res.Teacher),
-		Type: 		 res.Type,
-		Course: 	 FromServicesCourse(res.MpCourse),
+		Type:      res.Type,
+		Course:    FromServicesCourse(res.MpCourse),
 	}
 	return
 }
@@ -54,8 +54,8 @@ func FromServicesCourse(res []mapCourseEntity.MappingCourse) (data []CourseRespo
 
 func FromServiceCourse(res mapCourseEntity.MappingCourse) (data CourseResponse) {
 	data = CourseResponse{
-		ID:        res.ID,
-		Name:      res.Lesson.Name,
+		ID:   res.ID,
+		Name: res.Lesson.Name,
 	}
 	return
 }

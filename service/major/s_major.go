@@ -14,8 +14,6 @@ type MajorRepo interface {
 	FindOne(ctx context.Context, params *majorController.MajorParams) (data majorEntity.Major, err error)
 	Create(ctx context.Context, tx *sqlx.Tx, params *majorEntity.Major) (err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
-
-
 }
 
 type majorService struct {
@@ -33,7 +31,7 @@ func (service majorService) FindAll(ctx context.Context, params *majorController
 }
 
 func (service majorService) SelectAll(ctx context.Context, parameter *majorController.MajorParams) (data []majorEntity.Major, err error) {
-	data , err = service.majorRepo.SelectAll(ctx, parameter)
+	data, err = service.majorRepo.SelectAll(ctx, parameter)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +39,7 @@ func (service majorService) SelectAll(ctx context.Context, parameter *majorContr
 }
 
 func (service majorService) FindOne(ctx context.Context, params *majorController.MajorParams) (data majorEntity.Major, err error) {
-	data , err = service.majorRepo.FindOne(ctx, params)
+	data, err = service.majorRepo.FindOne(ctx, params)
 	if err != nil {
 		return data, err
 	}

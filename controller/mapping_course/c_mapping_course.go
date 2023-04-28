@@ -15,7 +15,6 @@ type MappingCourseService interface {
 	SelectAll(ctx context.Context, parameter *MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
 	FindOne(ctx context.Context, params *MappingCourseParams) (data mapCourseEntity.MappingCourse, err error)
 	Create(ctx context.Context, params *mapCourseEntity.MappingCourseReq) (err error)
-	
 }
 
 type mappingCourseController struct {
@@ -35,7 +34,7 @@ func (ctrl mappingCourseController) InitializeRoutes(userRouter *echo.Group, adm
 }
 
 // func (ctrl mappingCourseController) FindAll(c echo.Context) echo.HandlerFunc {
-// 	return 
+// 	return
 // }
 
 func (ctrl mappingCourseController) SelectAll() echo.HandlerFunc {

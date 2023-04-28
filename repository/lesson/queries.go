@@ -5,6 +5,5 @@ import (
 )
 
 var (
-
 	InsertLesson = `INSERT INTO ` + lessonEntity.Table + ` (id, name, type) VALUES (?,?,?)`
 )

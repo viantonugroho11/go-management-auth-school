@@ -15,7 +15,6 @@ import (
 )
 
 type MpStudentRepo interface {
-
 	FindAll(ctx context.Context, params *mapStudentController.MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error)
 	SelectAll(ctx context.Context, parameter *mapStudentController.MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error)
 	FindOne(ctx context.Context, params *mapStudentController.MappingStudentParams) (data mapStudentEntity.MappingStudent, err error)
@@ -45,18 +44,18 @@ func (service mpStudentService) FindAll(ctx context.Context, params *mapStudentC
 }
 
 func (service mpStudentService) SelectAll(ctx context.Context, parameter *mapStudentController.MappingStudentParams) (data []mapStudentEntity.MappingStudent, err error) {
-	data , err = service.mpStudentRepo.SelectAll(ctx, parameter)
+	data, err = service.mpStudentRepo.SelectAll(ctx, parameter)
 	if err != nil {
-		return 
+		return
 	}
 	return
 }
 
 func (service mpStudentService) FindOne(ctx context.Context, params *mapStudentController.MappingStudentParams) (data mapStudentEntity.MappingStudent, err error) {
 
-	data , err = service.mpStudentRepo.FindOne(ctx, params)
+	data, err = service.mpStudentRepo.FindOne(ctx, params)
 	if err != nil {
-		return 
+		return
 	}
 
 	return
@@ -81,7 +80,7 @@ func (service mpStudentService) Create(ctx context.Context, params *mapStudentEn
 		return errors.New("class not found")
 	}
 
-	tx , err := service.mpStudentRepo.CreateTx(ctx)
+	tx, err := service.mpStudentRepo.CreateTx(ctx)
 	if err != nil {
 		return err
 	}
@@ -91,8 +90,6 @@ func (service mpStudentService) Create(ctx context.Context, params *mapStudentEn
 		return err
 	}
 	err = tx.Commit()
-	
-
 
 	return
 }

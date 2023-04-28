@@ -10,13 +10,12 @@ import (
 	majorEntity "go-management-auth-school/entity/major"
 )
 
-
 type majorRepo struct {
 	DbMaster *sqlx.DB
 	DbSlave  *sqlx.DB
 }
 
-func NewMajorRepo(dbMaster ,dbSlave *sqlx.DB) *majorRepo {
+func NewMajorRepo(dbMaster, dbSlave *sqlx.DB) *majorRepo {
 	return &majorRepo{
 		DbMaster: dbMaster,
 		DbSlave:  dbSlave,
@@ -44,7 +43,7 @@ func (repo majorRepo) SelectAll(ctx context.Context, parameter *majorController.
 
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -62,28 +61,25 @@ func (repo majorRepo) SelectAll(ctx context.Context, parameter *majorController.
 		return
 	}
 
-
 	return
 }
 
 func (repo majorRepo) FindOne(ctx context.Context, params *majorController.MajorParams) (data majorEntity.Major, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, params)
 	query := majorEntity.Select + ` WHERE def.deleted_at IS NULL ` + whereStatment
-	
+
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
 	if err != nil {
-		return data,err
+		return data, err
 	}
-
-
 
 	return
 }
 
 func (repo majorRepo) Create(ctx context.Context, tx *sqlx.Tx, params *majorEntity.Major) (err error) {
 	queries := InsertMajor
-	_,err = tx.QueryContext(ctx, queries, params.Name)
+	_, err = tx.QueryContext(ctx, queries, params.Name)
 	if err != nil {
 		return err
 	}

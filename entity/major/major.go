@@ -3,8 +3,6 @@ package major
 import (
 	"database/sql"
 	"strings"
-
-
 )
 
 type Major struct {
@@ -14,14 +12,12 @@ type Major struct {
 
 var (
 	Table = "major"
-	
 
 	Column = []string{`def.id`, `def.name`}
 
-	Select = `Select ` +strings.Join(Column, ", ") + ` from ` + Table + ` def `
+	Select = `Select ` + strings.Join(Column, ", ") + ` from ` + Table + ` def `
 
 	GroupStatement = `group by def.id `
-
 )
 
 func (major *Major) ScanRows(rows *sql.Rows, row *sql.Row) error {

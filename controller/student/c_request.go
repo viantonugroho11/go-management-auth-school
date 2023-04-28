@@ -93,5 +93,4 @@ func (i *StudentRequest) ToService() (res *studentEntity.Student) {
 		Details:        i.Details,
 	}
 	return
-
 }

@@ -19,14 +19,14 @@ type MpCourseRepo interface {
 	FindAll(ctx context.Context, params *mapCourseController.MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
 	SelectAll(ctx context.Context, parameter *mapCourseController.MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error)
 	FindOne(ctx context.Context, params *mapCourseController.MappingCourseParams) (data mapCourseEntity.MappingCourse, err error)
-	Create(ctx context.Context,tx *sqlx.Tx, params *mapCourseEntity.MappingCourseReq) (err error)
+	Create(ctx context.Context, tx *sqlx.Tx, params *mapCourseEntity.MappingCourseReq) (err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
 }
 
 type mpCourseService struct {
-	mpCourseRepo MpCourseRepo
-	lessonServices lessonServices.LessonService
-	classServices classServices.ClassService
+	mpCourseRepo    MpCourseRepo
+	lessonServices  lessonServices.LessonService
+	classServices   classServices.ClassService
 	teacherServices teacherServices.TeacherService
 }
 
@@ -34,9 +34,9 @@ func NewMappingCourseService(repo MpCourseRepo, lessonService lessonServices.Les
 	classService classServices.ClassService,
 	teacherService teacherServices.TeacherService) *mpCourseService {
 	return &mpCourseService{
-		mpCourseRepo: repo,
-		lessonServices: lessonService,
-		classServices: classService,
+		mpCourseRepo:    repo,
+		lessonServices:  lessonService,
+		classServices:   classService,
 		teacherServices: teacherService,
 	}
 }
@@ -47,18 +47,18 @@ func (service mpCourseService) FindAll(ctx context.Context, params *mapCourseCon
 }
 
 func (service mpCourseService) SelectAll(ctx context.Context, parameter *mapCourseController.MappingCourseParams) (data []mapCourseEntity.MappingCourse, err error) {
-	data , err = service.mpCourseRepo.SelectAll(ctx, parameter)
+	data, err = service.mpCourseRepo.SelectAll(ctx, parameter)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	return
 }
 
 func (service mpCourseService) FindOne(ctx context.Context, params *mapCourseController.MappingCourseParams) (data mapCourseEntity.MappingCourse, err error) {
 	//logic here
-	data , err = service.mpCourseRepo.FindOne(ctx, params)
+	data, err = service.mpCourseRepo.FindOne(ctx, params)
 	if err != nil {
-		return data,err
+		return data, err
 	}
 	return
 }
@@ -72,14 +72,14 @@ func (service mpCourseService) Create(ctx context.Context, params *mapCourseEnti
 
 	// check duplicate
 	duplicate, err := service.mpCourseRepo.FindOne(ctx, &mapCourseController.MappingCourseParams{
-		ClassID:	 params.ClassID,
-		LessonID:	 params.LessonID,
-		TeacherID:	 params.TeacherID,
+		ClassID:   params.ClassID,
+		LessonID:  params.LessonID,
+		TeacherID: params.TeacherID,
 	})
 	if err != nil {
 		return err
 	}
-	if duplicate.ID != ""{
+	if duplicate.ID != "" {
 		return errors.New("duplicate mapping course")
 	}
 
@@ -95,8 +95,6 @@ func (service mpCourseService) Create(ctx context.Context, params *mapCourseEnti
 		return err
 	}
 	tx.Commit()
-	
-
 
 	return
 }

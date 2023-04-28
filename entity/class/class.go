@@ -14,7 +14,6 @@ type Class struct {
 	Level   string            `json:"level"`
 }
 
-
 var (
 	Table = "class"
 

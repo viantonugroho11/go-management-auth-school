@@ -51,7 +51,6 @@ func (repo mpCourseRepo) SelectAll(ctx context.Context, parameter *mpCourseContr
 	}
 	defer rows.Close()
 
-	
 	for rows.Next() {
 		d := mpCourseEntity.MappingCourse{}
 		err = d.ScanRows(rows, nil)
@@ -66,12 +65,11 @@ func (repo mpCourseRepo) SelectAll(ctx context.Context, parameter *mpCourseContr
 		return
 	}
 
-
 	return
 }
 
 func (repo mpCourseRepo) FindOne(ctx context.Context, params *mpCourseController.MappingCourseParams) (data mpCourseEntity.MappingCourse, err error) {
-	
+
 	whereStatment, conditionParam := repo.buildingParams(ctx, params)
 	query := mpCourseEntity.SelectMapCourse + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
@@ -84,15 +82,15 @@ func (repo mpCourseRepo) FindOne(ctx context.Context, params *mpCourseController
 	return
 }
 
-func (repo mpCourseRepo) Create(ctx context.Context,tx *sqlx.Tx, params *mpCourseEntity.MappingCourseReq) (err error) {
-	
-	queries:= InsertMapCourse
+func (repo mpCourseRepo) Create(ctx context.Context, tx *sqlx.Tx, params *mpCourseEntity.MappingCourseReq) (err error) {
+
+	queries := InsertMapCourse
 	uuidRandom := uuid.New().String()
-	_,err = tx.ExecContext(ctx,queries,
-	uuidRandom,
-	params.ClassID,
-	params.TeacherID,
-	params.LessonID,
+	_, err = tx.ExecContext(ctx, queries,
+		uuidRandom,
+		params.ClassID,
+		params.TeacherID,
+		params.LessonID,
 	)
 	if err != nil {
 		return err

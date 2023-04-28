@@ -9,7 +9,7 @@ import (
 )
 
 type MappingCourse struct {
-	ID        string                  `json:"id"`
+	ID        string                `json:"id"`
 	ClassID   string                `json:"class_id"`
 	TeacherID string                `json:"teacher_id"`
 	LessonID  string                `json:"lesson_id"`
@@ -19,7 +19,7 @@ type MappingCourse struct {
 }
 
 type MappingCourseReq struct {
-	ID        string    `json:"id"`
+	ID        string `json:"id"`
 	ClassID   string `json:"class_id"`
 	TeacherID string `json:"teacher_id"`
 	LessonID  string `json:"lesson_id"`
@@ -34,10 +34,9 @@ var (
 			LEFT JOIN teacher te ON te.id = def.teacher_id
 			LEFT JOIN lesson le ON le.id = def.lesson_id`
 
+	GroupStatement = ` GROUP BY def.id`
 
-			GroupStatement = ` GROUP BY def.id`
-
-	SelectMapCourse = `Select ` +strings.Join(Column, `,`) + ` FROM ` + Table + ` def`
+	SelectMapCourse = `Select ` + strings.Join(Column, `,`) + ` FROM ` + Table + ` def`
 )
 
 func (m *MappingCourse) ScanRows(rows *sql.Rows, row *sql.Row) error {
@@ -47,4 +46,3 @@ func (m *MappingCourse) ScanRows(rows *sql.Rows, row *sql.Row) error {
 	}
 	return row.Scan(parameter...)
 }
-

@@ -11,7 +11,6 @@ type ParentResponse struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Type      string `json:"type"`
-
 	Gender    int    `json:"gender"`
 	Phone     string `json:"phone"`
 	WorkID    int    `json:"work_id"`
@@ -21,7 +20,6 @@ type ParentResponse struct {
 	Student   string `json:"student"`
 	Image     string `json:"image"`
 }
-
 
 func FromServices(res []parentEntity.Parent) (data []ParentResponse) {
 	for _, v := range res {
@@ -36,18 +34,17 @@ func FromService(res parentEntity.Parent) (data ParentResponse) {
 		FirstName: res.FirstName,
 		LastName:  res.LastName,
 		Type:      res.Type,
-		Gender: res.Gender,
-		Phone: res.Phone,
-		WorkID: res.WorkID,
-		WorkName: res.WorkName,
-		Income: res.Income,
+		Gender:    res.Gender,
+		Phone:     res.Phone,
+		WorkID:    res.WorkID,
+		WorkName:  res.WorkName,
+		Income:    res.Income,
 		StudentID: res.StudentID,
 		Student: helperStr.GetFullNameStudent(studentEntity.Student{
 			FirstName: res.Student.FirstName,
-			LastName: res.Student.LastName,
+			LastName:  res.Student.LastName,
 		}),
 		Image: res.Image,
 	}
 	return
 }
-

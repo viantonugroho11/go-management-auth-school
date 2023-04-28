@@ -13,7 +13,7 @@ type ParentParams struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	StudentID string `json:"student_id"`
-	NIK 		 string `json:"nik"`
+	NIK       string `json:"nik"`
 	Gender    int    `json:"gender"`
 	Type      string `json:"type"`
 	controller.DefaultParameter

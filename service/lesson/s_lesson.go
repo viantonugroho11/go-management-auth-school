@@ -32,7 +32,7 @@ func (service lessonService) FindAll(ctx context.Context, params *lessonControll
 }
 
 func (service lessonService) SelectAll(ctx context.Context, parameter *lessonController.LessonParams) (data []lessonEntity.Lesson, err error) {
-	data , err = service.lessonRepo.SelectAll(ctx, parameter)
+	data, err = service.lessonRepo.SelectAll(ctx, parameter)
 	if err != nil {
 		return data, err
 	}
@@ -40,7 +40,7 @@ func (service lessonService) SelectAll(ctx context.Context, parameter *lessonCon
 }
 
 func (service lessonService) FindOne(ctx context.Context, params *lessonController.LessonParams) (data lessonEntity.Lesson, err error) {
-	data , err = service.lessonRepo.FindOne(ctx, params)
+	data, err = service.lessonRepo.FindOne(ctx, params)
 	if err != nil {
 		return data, err
 	}

@@ -5,8 +5,8 @@ import (
 )
 
 type LessonResponse struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 	Type string `json:"type"`
 }
 
@@ -19,8 +19,8 @@ func FromServices(res []lessonEntity.Lesson) (data []LessonResponse) {
 
 func FromService(res lessonEntity.Lesson) (data LessonResponse) {
 	data = LessonResponse{
-		ID:    res.ID,
-		Name:  res.Name,
+		ID:   res.ID,
+		Name: res.Name,
 		Type: res.Type,
 	}
 	return

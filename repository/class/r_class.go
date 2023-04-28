@@ -16,7 +16,7 @@ type classRepo struct {
 	DbSlave  *sqlx.DB
 }
 
-func NewClassRepo(dbMaster ,dbSlave *sqlx.DB) *classRepo {
+func NewClassRepo(dbMaster, dbSlave *sqlx.DB) *classRepo {
 	return &classRepo{
 		DbMaster: dbMaster,
 		DbSlave:  dbSlave,
@@ -45,7 +45,7 @@ func (repo classRepo) SelectAll(ctx context.Context, parameter *classController.
 
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	defer rows.Close()
 

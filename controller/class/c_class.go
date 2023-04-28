@@ -15,7 +15,6 @@ type ClassService interface {
 	SelectAll(ctx context.Context, parameter *ClassParams) (data []classEntity.Class, err error)
 	FindOne(ctx context.Context, params *ClassParams) (data classEntity.Class, err error)
 	Create(ctx context.Context, params *classEntity.Class) (err error)
-
 }
 
 type classController struct {

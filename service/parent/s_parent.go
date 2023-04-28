@@ -20,13 +20,13 @@ type ParentRepo interface {
 }
 
 type parentService struct {
-	parentRepo ParentRepo
+	parentRepo      ParentRepo
 	studentServices studentService.StudentService
 }
 
 func NewParentService(repo ParentRepo, studentServices studentService.StudentService) *parentService {
 	return &parentService{
-		parentRepo: repo,
+		parentRepo:      repo,
 		studentServices: studentServices,
 	}
 }
@@ -44,17 +44,17 @@ func (service parentService) SelectAll(ctx context.Context, parameter *parentCon
 }
 
 func (service parentService) FindOne(ctx context.Context, params *parentController.ParentParams) (data parentEntity.Parent, err error) {
-	data , err = service.parentRepo.FindOne(ctx, params)
+	data, err = service.parentRepo.FindOne(ctx, params)
 	if err != nil {
-		return 
+		return
 	}
 	return
 }
 
-//create parent
+// create parent
 func (service parentService) Create(ctx context.Context, params *parentEntity.Parent) (err error) {
 	// checkStudent
-	checkStudent , err := service.studentServices.FindOne(ctx, &studentService.StudentParams{})
+	checkStudent, err := service.studentServices.FindOne(ctx, &studentService.StudentParams{})
 	if err != nil {
 		return
 	}
@@ -72,12 +72,12 @@ func (service parentService) Create(ctx context.Context, params *parentEntity.Pa
 		return errors.New("NIK already exist")
 	}
 
-	tx , err := service.parentRepo.CreateTx(ctx)
+	tx, err := service.parentRepo.CreateTx(ctx)
 	if err != nil {
 		return
 	}
 	// create parent
-	err = service.parentRepo.Create(ctx,tx, params)
+	err = service.parentRepo.Create(ctx, tx, params)
 	if err != nil {
 		tx.Rollback()
 		return

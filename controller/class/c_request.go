@@ -34,11 +34,9 @@ func (i *ClassRequest) Validate() error {
 
 func (i *ClassRequest) ToService() (res *classEntity.Class) {
 	res = &classEntity.Class{
-		Name:  i.Name,
+		Name:    i.Name,
 		MajorID: i.Major,
-		Level: i.Level,
+		Level:   i.Level,
 	}
 	return
 }
-
-

@@ -11,13 +11,12 @@ import (
 	lessonEntity "go-management-auth-school/entity/lesson"
 )
 
-
 type lessonRepo struct {
 	DbMaster *sqlx.DB
 	DbSlave  *sqlx.DB
 }
 
-func NewLessonRepo(dbMaster ,dbSlave *sqlx.DB) *lessonRepo {
+func NewLessonRepo(dbMaster, dbSlave *sqlx.DB) *lessonRepo {
 	return &lessonRepo{
 		DbMaster: dbMaster,
 		DbSlave:  dbSlave,
@@ -25,7 +24,6 @@ func NewLessonRepo(dbMaster ,dbSlave *sqlx.DB) *lessonRepo {
 }
 
 func (repo lessonRepo) buildingParams(ctx context.Context, parameter *lessonController.LessonParams) (conditionString string, conditionParam []interface{}) {
-
 	if parameter.ID != "" {
 		conditionString += " AND def.id = ?"
 		conditionParam = append(conditionParam, parameter.ID)
@@ -44,7 +42,7 @@ func (repo lessonRepo) SelectAll(ctx context.Context, parameter *lessonControlle
 
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -66,14 +64,13 @@ func (repo lessonRepo) FindOne(ctx context.Context, params *lessonController.Les
 
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	if err != nil {
-		return data,err
+		return data, err
 	}
 	err = data.ScanRows(nil, row)
 	if err != nil {
-		return data,err
+		return data, err
 	}
 
-	
 	return
 }
 
