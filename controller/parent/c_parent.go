@@ -2,10 +2,12 @@ package parent
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 
 	parentEntity "go-management-auth-school/entity/parent"
+	"go-management-auth-school/response"
 )
 
 type ParentService interface {
@@ -26,5 +28,73 @@ func NewParentController(parentService ParentService) parentController {
 }
 
 func (ctrl parentController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
+	userRouter.GET("/all", ctrl.SelectAllParent())
+	userRouter.POST("", ctrl.CreateParent())
+	userRouter.GET("/one", ctrl.FindOneParent())
+}
 
+// get all parent
+func (ctrl parentController) SelectAllParent() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ctx := c.Request().Context()
+		if ctx == nil {
+			ctx = context.Background()
+		}
+
+		params := new(ParentParams)
+		params.ID = c.QueryParam("id")
+		params.NIK = c.QueryParam("nik")
+		params.FirstName = c.QueryParam("first_name")
+		params.LastName = c.QueryParam("last_name")
+		params.StudentID = c.QueryParam("student_id")
+		data, err := ctrl.parentService.SelectAll(ctx, params)
+		if err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+		return response.RespondSuccess(c, http.StatusOK, FromServices(data), nil)
+	}
+}
+
+// get one parent
+func (ctrl parentController) FindOneParent() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ctx := c.Request().Context()
+		if ctx == nil {
+			ctx = context.Background()
+		}
+
+		params := new(ParentParams)
+		params.ID = c.Param("id")
+		data, err := ctrl.parentService.FindOne(ctx, params)
+		if err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+		return response.RespondSuccess(c, http.StatusOK, FromService(data), nil)
+	}
+}
+
+// create parent
+func (ctrl parentController) CreateParent() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ctx := c.Request().Context()
+		if ctx == nil {
+			ctx = context.Background()
+		}
+
+		reqParent := new(ParentRequest)
+		if err := c.Bind(reqParent); err != nil {
+			return err
+		}
+
+		if err := reqParent.Validate(); err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+
+		reqData := reqParent.ToService()
+
+		if err := ctrl.parentService.Create(ctx, reqData); err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+		return response.RespondSuccess(c, http.StatusCreated, nil, nil)
+	}
 }

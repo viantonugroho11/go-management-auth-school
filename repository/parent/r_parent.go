@@ -55,12 +55,44 @@ func (repo parentRepo) FindAll(ctx context.Context, params *parentController.Par
 }
 
 func (repo parentRepo) SelectAll(ctx context.Context, parameter *parentController.ParentParams) (data []parentEntity.Parent, err error) {
-	// build query here
+	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
+	query := parentEntity.SelectParent + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + parentEntity.GroupStatement +
+		` ORDER BY def.id` + parameter.OrderBy
+
+	// query = database.SubstitutePlaceholder(query, 1)
+	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		temp := parentEntity.Parent{}
+		err = temp.ScanRows(rows, nil)
+		if err != nil {
+			return
+		}
+		data = append(data, temp)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return
+	}
 	return
 }
 
 func (repo parentRepo) FindOne(ctx context.Context, params *parentController.ParentParams) (data parentEntity.Parent, err error) {
-	// build query here
+	whereStatment, conditionParam := repo.buildingParams(ctx, params)
+	query := parentEntity.SelectParent + ` WHERE def.deleted_at IS NULL ` + whereStatment
+
+	// query = database.SubstitutePlaceholder(query, 1)
+	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
+	err = data.ScanRows(nil, row)
+	if err != nil {
+		return
+	}
+
 	return
 }
 

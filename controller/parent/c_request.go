@@ -41,7 +41,7 @@ func (i *ParentRequest) Validate() error {
 	return nil
 }
 
-func (i *ParentRequest) ToEntity() (res *parentEntity.Parent) {
+func (i *ParentRequest) ToService() (res *parentEntity.Parent) {
 	res = &parentEntity.Parent{
 		FirstName: i.FirstName,
 		LastName:  i.LastName,

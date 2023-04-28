@@ -36,10 +36,18 @@ func (service parentService) FindAll(ctx context.Context, params *parentControll
 }
 
 func (service parentService) SelectAll(ctx context.Context, parameter *parentController.ParentParams) (data []parentEntity.Parent, err error) {
+	data, err = service.parentRepo.SelectAll(ctx, parameter)
+	if err != nil {
+		return
+	}
 	return
 }
 
 func (service parentService) FindOne(ctx context.Context, params *parentController.ParentParams) (data parentEntity.Parent, err error) {
+	data , err = service.parentRepo.FindOne(ctx, params)
+	if err != nil {
+		return 
+	}
 	return
 }
 
@@ -63,7 +71,17 @@ func (service parentService) Create(ctx context.Context, params *parentEntity.Pa
 	if checkNikParent.ID != "" {
 		return errors.New("NIK already exist")
 	}
+
+	tx , err := service.parentRepo.CreateTx(ctx)
+	if err != nil {
+		return
+	}
 	// create parent
-	err = service.parentRepo.Create(ctx,nil, params)
+	err = service.parentRepo.Create(ctx,tx, params)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
 	return
 }

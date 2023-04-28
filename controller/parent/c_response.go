@@ -1,7 +1,9 @@
 package parent
 
 import (
-	// parentEntity "go-management-auth-school/entity/parent"
+	parentEntity "go-management-auth-school/entity/parent"
+	studentEntity "go-management-auth-school/entity/student"
+	helperStr "go-management-auth-school/helper/str"
 )
 
 type ParentResponse struct {
@@ -18,5 +20,34 @@ type ParentResponse struct {
 	StudentID string `json:"student_id"`
 	Student   string `json:"student"`
 	Image     string `json:"image"`
-
 }
+
+
+func FromServices(res []parentEntity.Parent) (data []ParentResponse) {
+	for _, v := range res {
+		data = append(data, FromService(v))
+	}
+	return
+}
+
+func FromService(res parentEntity.Parent) (data ParentResponse) {
+	data = ParentResponse{
+		ID:        res.ID,
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+		Type:      res.Type,
+		Gender: res.Gender,
+		Phone: res.Phone,
+		WorkID: res.WorkID,
+		WorkName: res.WorkName,
+		Income: res.Income,
+		StudentID: res.StudentID,
+		Student: helperStr.GetFullNameStudent(studentEntity.Student{
+			FirstName: res.Student.FirstName,
+			LastName: res.Student.LastName,
+		}),
+		Image: res.Image,
+	}
+	return
+}
+
