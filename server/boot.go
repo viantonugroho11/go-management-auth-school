@@ -92,17 +92,22 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	studentRepo := studentRepository.NewStudentRepo(config.MasterDB, config.SlaveDB)
 	teacherRepo := teacherRepository.NewTeacherRepo(config.MasterDB, config.SlaveDB)
 
-	adminService := adminServices.NewAdminService(adminRepo)
-	classService := classServices.NewClassService(classRepo)
-	lessonService := lessonServices.NewLessonService(lessonRepo)
+	// service start
 	majorService := majorServices.NewMajorService(majorRepo)
-	mapCourseService := mappingCourseServices.NewMappingCourseService(mpCourseRepo)
-	mappingStudentService := mappingStudentServices.NewMappingStudentService(mpStudentRepo)
-	userService := userServices.NewUserService(userRepo)
-	studentService := studentServices.NewStudentService(studentRepo)
-	parentService := parentServices.NewParentService(parentRepo,studentService)
-	authService := authServices.NewAuthService(userRepo, conf, mapCourseService, studentService, mappingStudentService, userService)
+	classService := classServices.NewClassService(classRepo)
 	teacherService := teacherServices.NewTeacherService(teacherRepo)
+	studentService := studentServices.NewStudentService(studentRepo)
+
+	adminService := adminServices.NewAdminService(adminRepo)
+	lessonService := lessonServices.NewLessonService(lessonRepo)
+	userService := userServices.NewUserService(userRepo)
+	parentService := parentServices.NewParentService(parentRepo, studentService)
+
+	// mapping
+	mapCourseService := mappingCourseServices.NewMappingCourseService(mpCourseRepo, lessonService, classService, teacherService)
+	mappingStudentService := mappingStudentServices.NewMappingStudentService(mpStudentRepo, studentService, teacherService, classService)
+	authService := authServices.NewAuthService(userRepo, conf, mapCourseService, studentService, mappingStudentService, userService)
+	// service end
 
 	adminRouter := "/admin"
 	adminUserRouter := apiUserV1.Group(adminRouter)
