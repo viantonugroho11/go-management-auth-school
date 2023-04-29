@@ -29,7 +29,7 @@ func NewMappingCourseController(mappingCourseService MappingCourseService) mappi
 
 func (ctrl mappingCourseController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 	userRouter.POST("", ctrl.Create())
-	userRouter.GET("", ctrl.SelectAll())
+	userRouter.GET("/all", ctrl.SelectAll())
 	userRouter.GET("/:id", ctrl.FindOne())
 }
 

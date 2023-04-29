@@ -30,11 +30,11 @@ func NewStudentController(studentServices StudentService) studentController {
 }
 
 func (ctrl studentController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
-	userRouter.GET("", ctrl.GetStudent())
+	userRouter.GET("/all", ctrl.SelectAll())
 	userRouter.POST("", ctrl.CreateStudent())
 }
 
-func (ctrl studentController) GetStudent() echo.HandlerFunc {
+func (ctrl studentController) SelectAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		if ctx == nil {

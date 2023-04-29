@@ -29,7 +29,7 @@ func NewClassController(classService ClassService) classController {
 
 func (ctrl classController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 	userRouter.GET("/:id", ctrl.FindOne())
-	userRouter.GET("", ctrl.FindAll())
+	userRouter.GET("/all", ctrl.SelectAll())
 	userRouter.POST("", ctrl.Create())
 }
 
@@ -52,7 +52,7 @@ func (ctrl classController) FindOne() echo.HandlerFunc {
 }
 
 // get all
-func (ctrl classController) FindAll() echo.HandlerFunc {
+func (ctrl classController) SelectAll() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		ctx := c.Request().Context()
 		if ctx == nil {

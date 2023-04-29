@@ -28,7 +28,7 @@ func NewMajorController(majorServices MajorService) majorController {
 }
 
 func (ctrl majorController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
-	userRouter.GET("", ctrl.SelectAll())
+	userRouter.GET("/all", ctrl.SelectAll())
 	userRouter.GET("/:id", ctrl.FindOne())
 	userRouter.POST("", ctrl.Create())
 }

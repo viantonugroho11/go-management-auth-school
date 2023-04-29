@@ -28,7 +28,9 @@ func NewLessonController(lessonService LessonService) lessonController {
 }
 
 func (ctrl lessonController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
-
+	userRouter.GET("/all", ctrl.SelectAll())
+	userRouter.POST("", ctrl.Create())
+	userRouter.GET("/one", ctrl.FindOne())
 }
 
 // get one lesson
@@ -50,7 +52,7 @@ func (ctrl lessonController) FindOne() echo.HandlerFunc {
 }
 
 // get all lesson
-func (ctrl lessonController) FindAll() echo.HandlerFunc {
+func (ctrl lessonController) SelectAll() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		ctx := c.Request().Context()
 		if ctx == nil {
