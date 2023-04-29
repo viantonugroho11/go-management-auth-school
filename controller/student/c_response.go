@@ -72,14 +72,14 @@ func FromService(res studentEntity.Student) (data StudentResponse) {
 		Status:         helperStr.IsTypeStudent(res.Status),
 		IsActive:       helperStr.IsActiveConvert(res.IsActive),
 		Address:        res.Address,
-		Height:         string(res.Height),
-		Weight:         string(res.Weight),
+		Height:         helperStr.IntToString(res.Height),
+		Weight:         helperStr.IntToString(res.Weight),
 		BloodType:      res.BloodType,
 		Disability:     helperStr.IsTypeStudent(res.Disability),
 		DisabilityInfo: res.DisabilityInfo,
 		Details:        fmt.Sprintf("%v", res.Details),
-		RT:             string(res.Rt),
-		RW:             string(res.Rw),
+		RT:             helperStr.IntToString(res.Rt),
+		RW:             helperStr.IntToString(res.Rw),
 		Parent:         FromServicesParent(res.Parent),
 	}
 	return
@@ -96,7 +96,7 @@ func FromServiceParent(res parentEntity.Parent) (data ParentResponse) {
 	data = ParentResponse{
 		ID:       res.ID,
 		Name:     helperStr.GetFullNameParent(res),
-		Type:     res.Type,
+		Type:     helperStr.IsTypeParent(helperStr.StringToInt(res.Type)),
 		Gender:   helperStr.IsGender(res.Gender),
 		Phone:    res.Phone,
 		WorkID:   res.WorkID,

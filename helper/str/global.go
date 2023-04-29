@@ -67,6 +67,11 @@ func StringToBool(data string) bool {
 	return res
 }
 
+//int to string
+func IntToString(data int) string {
+	return strconv.Itoa(data)
+}
+
 // StringToBoolString ...
 func StringToBoolString(data string) string {
 	res, _ := strconv.ParseBool(data)
