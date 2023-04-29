@@ -29,9 +29,9 @@ func (repo mpStudentRepo) buildingParams(ctx context.Context, parameter *mapStud
 		conditionString += " AND def.id = ?"
 		conditionParam = append(conditionParam, parameter.ID)
 	}
-	if parameter.Indentity != "" {
-		conditionString += " AND def.indentity = ?"
-		conditionParam = append(conditionParam, parameter.Indentity)
+	if parameter.Identity != "" {
+		conditionString += " AND def.identity = ?"
+		conditionParam = append(conditionParam, parameter.Identity)
 	}
 	if parameter.ClassID != "" {
 		conditionString += " AND def.class_id = ?"
@@ -107,7 +107,7 @@ func (repo mpStudentRepo) Create(ctx context.Context, tx *sqlx.Tx, params *mapSt
 	// build query here
 	queries := InsertMapStudent
 	uuidRandom := uuid.New().String()
-	_, err = tx.ExecContext(ctx, queries, uuidRandom, params.Indentity, params.ClassID, params.Type)
+	_, err = tx.ExecContext(ctx, queries, uuidRandom, params.IdentityID, params.ClassID, params.Type)
 	if err != nil {
 		return
 	}

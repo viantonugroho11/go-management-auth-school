@@ -30,7 +30,7 @@ func NewParentController(parentService ParentService) parentController {
 func (ctrl parentController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 	userRouter.GET("/all", ctrl.SelectAllParent())
 	userRouter.POST("", ctrl.CreateParent())
-	userRouter.GET("/one", ctrl.FindOneParent())
+	userRouter.GET("/:id", ctrl.FindOneParent())
 }
 
 // get all parent

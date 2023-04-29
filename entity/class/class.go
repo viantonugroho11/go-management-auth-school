@@ -11,7 +11,7 @@ type Class struct {
 	Name    string            `json:"name"`
 	MajorID int               `json:"major_id"`
 	Major   majorEntity.Major `json:"major"`
-	Level   string            `json:"level"`
+	Level   int            `json:"level"`
 }
 
 var (
@@ -19,7 +19,7 @@ var (
 
 	Columns = []string{`def.id`, `def.name`, `def.major_id`, `def.level`}
 
-	SelectStatment = `Select ` + "`" + strings.Join(Columns, "` , `") + "`" + ` From ` + Table + ` def `
+	SelectStatment = `Select ` + strings.Join(Columns, ",") + ` From ` + Table + ` def `
 
 	GroupStatement = ` Group By def.id `
 )

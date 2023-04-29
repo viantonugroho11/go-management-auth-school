@@ -19,7 +19,7 @@ type ClassParams struct {
 type ClassRequest struct {
 	Name  string `json:"name"`
 	Major int    `json:"major"`
-	Level string `json:"level"`
+	Level int `json:"level"`
 }
 
 func (i *ClassRequest) Validate() error {

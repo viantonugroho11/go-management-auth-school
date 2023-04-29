@@ -31,7 +31,7 @@ func NewMappingStudentController(mappingStudentService MappingStudentService) ma
 func (ctrl mappingStudentController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 	userRouter.GET("/all", ctrl.SelectAllMappingStudent())
 	userRouter.POST("", ctrl.CreateMappingStudent())
-	userRouter.GET("/one", ctrl.FindOneMappingStudent())
+	userRouter.GET("/:id", ctrl.FindOneMappingStudent())
 }
 
 // get all mapping student

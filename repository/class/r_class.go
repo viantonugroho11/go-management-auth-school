@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
 	classController "go-management-auth-school/controller/class"
@@ -79,8 +78,7 @@ func (repo classRepo) FindOne(ctx context.Context, params *classController.Class
 func (repo classRepo) Create(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error) {
 	// build query here
 	queries := InsertClass
-	uuidRandom := uuid.New().String()
-	_, err = tx.QueryContext(ctx, queries, uuidRandom, params.Name, params.MajorID, params.Level)
+	_, err = tx.QueryContext(ctx, queries, params.Name, params.MajorID, params.Level)
 	if err != nil {
 		return err
 	}

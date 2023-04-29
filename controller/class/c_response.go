@@ -8,7 +8,7 @@ type ClassResponse struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`
 	Major string `json:"major"`
-	Level string `json:"level"`
+	Level int `json:"level"`
 }
 
 func FromServices(res []classEntity.Class) (data []ClassResponse) {

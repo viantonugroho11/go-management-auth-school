@@ -7,7 +7,7 @@ import (
 )
 
 type MappingStudentResponse struct {
-	ID        int              `json:"id"`
+	ID        string              `json:"id"`
 	ClassID   string           `json:"class_id"`
 	Class     string           `json:"class"`
 	StudentID string           `json:"student_id"`
@@ -31,17 +31,29 @@ func FromServices(res []mapStudentEntity.MappingStudent) (data []MappingStudentR
 }
 
 func FromService(res mapStudentEntity.MappingStudent) (data MappingStudentResponse) {
-	data = MappingStudentResponse{
+	switch res.Type {
+	case "0":
+		data = MappingStudentResponse{
 		ID:        res.ID,
 		ClassID:   res.ClassID,
 		Class:     res.Class.Name,
-		StudentID: res.Student.ID,
+		StudentID: res.Identity,
 		Student:   helperStr.GetFullNameStudent(res.Student),
-		TeacherID: res.Teacher.ID,
-		Teacher:   helperStr.GetFullNameTeacher(res.Teacher),
 		Type:      res.Type,
 		Course:    FromServicesCourse(res.MpCourse),
 	}
+	case "1":
+		data = MappingStudentResponse{
+		ID:        res.ID,
+		ClassID:   res.ClassID,
+		Class:     res.Class.Name,
+		TeacherID: res.Identity,
+		Teacher:   helperStr.GetFullNameTeacher(res.Teacher),
+		Type:      res.Type,
+		Course:    FromServicesCourse(res.MpCourse),
+		}
+	}
+	
 	return
 }
 

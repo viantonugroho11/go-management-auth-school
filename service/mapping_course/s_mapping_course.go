@@ -105,7 +105,7 @@ func (service mpCourseService) validateData(ctx context.Context, params *mapCour
 			ID: params.LessonID,
 		},
 	})
-	if err != nil || lesson.ID == 0 {
+	if err != nil || lesson.ID == "" {
 		return true, err
 	}
 

@@ -61,7 +61,7 @@ func (ctrl classController) SelectAll() echo.HandlerFunc {
 
 		params := new(ClassParams)
 		params.ID = c.Param("id")
-		data, err := ctrl.classService.FindAll(ctx, params)
+		data, err := ctrl.classService.SelectAll(ctx, params)
 		if err != nil {
 			return response.RespondError(c, http.StatusBadRequest, err)
 		}

@@ -30,7 +30,7 @@ func NewLessonController(lessonService LessonService) lessonController {
 func (ctrl lessonController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 	userRouter.GET("/all", ctrl.SelectAll())
 	userRouter.POST("", ctrl.Create())
-	userRouter.GET("/one", ctrl.FindOne())
+	userRouter.GET("/:id", ctrl.FindOne())
 }
 
 // get one lesson
@@ -62,7 +62,7 @@ func (ctrl lessonController) SelectAll() echo.HandlerFunc {
 		params := new(LessonParams)
 		params.ID = c.QueryParam("id")
 
-		data, err := ctrl.lessonService.FindAll(ctx, params)
+		data, err := ctrl.lessonService.SelectAll(ctx, params)
 		if err != nil {
 			return response.RespondError(c, http.StatusBadRequest, err)
 		}

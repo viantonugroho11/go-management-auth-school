@@ -10,16 +10,16 @@ import (
 )
 
 type MappingStudentParams struct {
-	Indentity string `json:"indentity"`
-	Type      string `json:"type"`
-	ClassID   string `json:"class_id"`
+	Identity string `json:"identity"`
+	Type     string `json:"type"`
+	ClassID  string `json:"class_id"`
 	controller.DefaultParameter
 }
 
 type MappingStudentRequest struct {
-	Indentity string `json:"indentity"`
-	Type      string `json:"type"`
-	ClassID   string `json:"class_id"`
+	Identity string `json:"identity"`
+	Type     string `json:"type"`
+	ClassID  string `json:"class_id"`
 }
 
 func (m *MappingStudentRequest) Validate() error {
@@ -34,9 +34,9 @@ func (m *MappingStudentRequest) Validate() error {
 
 func (m *MappingStudentRequest) ToService() (res *mapStudentEntity.MappingStudentReq) {
 	res = &mapStudentEntity.MappingStudentReq{
-		Indentity: m.Indentity,
-		Type:      m.Type,
-		ClassID:   m.ClassID,
+		IdentityID: m.Identity,
+		Type:     m.Type,
+		ClassID:  m.ClassID,
 	}
 	return
 }

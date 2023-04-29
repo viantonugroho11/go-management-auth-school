@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	InsertClass = `INSERT INTO ` + classEntity.Table + ` (id, name, major_id, level) VALUES (?,?,?,?)`
+	InsertClass = `INSERT INTO ` + classEntity.Table + ` (name, major_id, level) VALUES (?,?,?)`
 )

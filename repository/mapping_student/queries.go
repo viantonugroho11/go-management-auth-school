@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	InsertMapStudent = `INSERT INTO ` + mapStudentEntity.Table + ` (id,indentity_id, class_id, type) VALUES (?,?, ?, ?)`
+	InsertMapStudent = `INSERT INTO ` + mapStudentEntity.Table + ` (id,identity_id, class_id, type) VALUES (?,?, ?, ?)`
 )

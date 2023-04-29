@@ -97,22 +97,16 @@ func (service mpStudentService) Create(ctx context.Context, params *mapStudentEn
 func (service mpStudentService) checkIdentity(params *mapStudentEntity.MappingStudentReq, ctx context.Context) (bool, error) {
 	switch params.Type {
 	case "0":
-		checkIdentityStudent, err := service.studentServices.FindOne(ctx, &studentService.StudentParams{
-			IdentityID: params.Indentity,
+		checkIdentityStudent, _ := service.studentServices.FindOne(ctx, &studentService.StudentParams{
+			IdentityID: params.IdentityID,
 		})
-		if err != nil {
-			return true, err
-		}
 		if checkIdentityStudent.ID == "" {
 			return true, errors.New("student not found")
 		}
 	case "1":
-		checkIdentityTeacher, err := service.teacherServices.FindOne(ctx, &teacherService.TeacherParams{
-			IdentityID: params.Indentity,
+		checkIdentityTeacher, _ := service.teacherServices.FindOne(ctx, &teacherService.TeacherParams{
+			IdentityID: params.IdentityID,
 		})
-		if err != nil {
-			return true, err
-		}
 		if checkIdentityTeacher.ID == "" {
 			return true, errors.New("teacher not found")
 		}

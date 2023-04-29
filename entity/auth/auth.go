@@ -14,7 +14,7 @@ type JwtCustomClaimsStudent struct {
 	Firstname     string                        `json:"firstname"`
 	Lastname      string                        `json:"lastname"`
 	Email         string                        `json:"email"`
-	Indentity     string                        `json:"indentity"`
+	Identity      string                        `json:"identity"`
 	Type          string                        `json:"type"`
 	Phone         string                        `json:"phone"`
 	Class         classEntity.Class             `json:"class"`
@@ -23,7 +23,7 @@ type JwtCustomClaimsStudent struct {
 }
 
 type Auth struct {
-	Indentity        string `json:"indentity"`
+	Identity         string `json:"identity"`
 	IsActive         bool   `json:"isActive"`
 	ExpiredAt        string `json:"expiredAt"`
 	RefreshExpiredAt string `json:"refreshExpiredAt"`

@@ -103,8 +103,8 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	tx.Commit()
 
 	data = authEntity.Auth{
-		Indentity: dataUser.IdentityID,
-		IsActive:  dataUser.Status,
+		Identity: dataUser.IdentityID,
+		IsActive: dataUser.Status,
 		// Type: dataUser.,
 		ExpiredAt:        tokenExpireTime.Format(timeHelper.DATE_TIME_FORMAT),
 		Token:            token,
@@ -177,8 +177,8 @@ func (service AuthService) RegisterStudent(ctx context.Context, input *userEntit
 	refreshTokenExpireTime, tokenExpireTime, token, refreshToken := service.generateTokenJwt(dataUser)
 
 	data = authEntity.Auth{
-		Indentity: dataUser.IdentityID,
-		IsActive:  dataUser.Status,
+		Identity: dataUser.IdentityID,
+		IsActive: dataUser.Status,
 		// Type: dataUser.,
 		ExpiredAt:        tokenExpireTime.Format(timeHelper.DATE_TIME_FORMAT),
 		Token:            token,

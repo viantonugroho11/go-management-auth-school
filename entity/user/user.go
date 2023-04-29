@@ -10,7 +10,7 @@ import (
 //
 //	username VARCHAR(255) NOT NULL DEFAULT '',
 //	password VARCHAR(255) NOT NULL DEFAULT '',
-//	identify_id VARCHAR(255) NOT NULL DEFAULT '',
+//	identity_id VARCHAR(255) NOT NULL DEFAULT '',
 //	permission INT NOT NULL DEFAULT 0,
 //	last_login DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 //	device_id VARCHAR(255) NOT NULL DEFAULT '',
@@ -23,7 +23,7 @@ type User struct {
 	ID         string         `json:"id"`
 	Username   string         `json:"username"`
 	Password   string         `json:"password"`
-	IdentityID string         `json:"identify_id"`
+	IdentityID string         `json:"identity_id"`
 	Permission int            `json:"permission"`
 	LastLogin  string         `json:"last_login"`
 	DeviceID   string         `json:"device_id"`
