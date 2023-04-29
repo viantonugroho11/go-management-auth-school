@@ -28,6 +28,7 @@ func NewAuthController(service authService) *authController {
 func (ctrl authController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 	authRouter.POST("/login", ctrl.Login())
 	authRouter.POST("/register", ctrl.RegisterStudent())
+	authRouter.GET("/validate", ctrl.ValidateJWT())
 }
 
 func (ctrl authController) Login() echo.HandlerFunc {
@@ -89,11 +90,11 @@ func (ctrl authController) ValidateJWT() echo.HandlerFunc {
 		}
 
 		// validate token
-		_, err = ctrl.service.ValidateToken(ctx, token)
+		data, err := ctrl.service.ValidateToken(ctx, token)
 		if err != nil {
 			return response.RespondError(c, 401, err)
 		}
 
-		return nil
+		return response.RespondSuccess(c, 200, FromServiceValidate(data), nil)
 	}
 }

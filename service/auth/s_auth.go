@@ -16,6 +16,11 @@ import (
 	authEntity "go-management-auth-school/entity/auth"
 	userEntity "go-management-auth-school/entity/user"
 
+	//controller
+	// studentController "go-management-auth-school/controller/student"
+	// teacherController "go-management-auth-school/controller/teacher"
+
+
 	// "go-management-auth-school/entity/class"
 	jwthelper "go-management-auth-school/helper/jwt"
 	timeHelper "go-management-auth-school/helper/time"
@@ -23,6 +28,10 @@ import (
 	// validasiHelper "go-management-auth-school/helper/validasi"
 	userRepo "go-management-auth-school/service/user"
 	"time"
+
+
+	//helper
+	helperStr "go-management-auth-school/helper/str"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
@@ -193,7 +202,7 @@ func (service AuthService) RegisterStudent(ctx context.Context, input *userEntit
 func (service AuthService) ValidateToken(ctx context.Context, token string) (data authEntity.AuthValidate, err error) {
 
 	tokenBearer := strings.Split(token, " ")
-	if len(tokenBearer) == 1 {
+	if len(tokenBearer) == 2 {
 		token = tokenBearer[1]
 	}
 
@@ -211,19 +220,39 @@ func (service AuthService) ValidateToken(ctx context.Context, token string) (dat
 		return
 	}
 
+	if !tokenParsed.Valid {
+		// fmt.Println("Token is invalid")
+		return
+	}
+
 	if claims, ok := tokenParsed.Claims.(*jwt.StandardClaims); ok && tokenParsed.Valid {
 		// get data from JWT token
 		id := claims.Id
+		data.Identity = id
+		data.ExpiredAt = claims.ExpiresAt
 		fmt.Println("id: ", id)
+		if data.ExpiredAt < time.Now().Unix() {
+      return data, errors.New("token expired")
+    }
 
 		// get data from database
 		data.User, err = service.userRepo.FindOne(ctx, &userController.UserParams{
 			IdentityID: id,
 		})
+		permission := helperStr.IsPermission(data.User.Permission)
+
+		switch permission {
+		case "student":
+			data.Student, err = service.studentService.FindOne(ctx, &studentServices.StudentParams{
+				Nis: data.User.IdentityID,
+			})
+		default:
+			err = errors.New("invalid permission")
+		}
 
 		// get mapping student
 	} else {
 		return data, errors.New("invalid token")
 	}
-	return
+	return data, err
 }

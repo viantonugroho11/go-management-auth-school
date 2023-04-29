@@ -268,3 +268,8 @@ func ConvertFloat64Pointer(number *float64) float64 {
 func RemoveString(s string, index, length int) string {
 	return s[:index] + s[index+length:]
 }
+
+// convert int64 (unix) to time
+func ConvertUnixToTime(unix int64) time.Time {
+	return time.Unix(unix, 0)
+}

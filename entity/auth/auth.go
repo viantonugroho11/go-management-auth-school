@@ -5,6 +5,8 @@ import (
 	mappingCourse "go-management-auth-school/entity/mapping_course"
 	mapStudent "go-management-auth-school/entity/mapping_student"
 	userEntity "go-management-auth-school/entity/user"
+	studentEntity "go-management-auth-school/entity/student"
+	teacherEntity "go-management-auth-school/entity/teacher"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -36,6 +38,9 @@ type Auth struct {
 
 type AuthValidate struct {
 	Identity string                    `json:"identity"`
+	ExpiredAt int64                   `json:"expiredAt"`
 	User     userEntity.User           `json:"user"`
 	MpClass  mapStudent.MappingStudent `json:"mp_class"`
+	Student studentEntity.Student			`json:"student"`
+	Teacher teacherEntity.Teacher			`json:"teacher"`
 }

@@ -96,3 +96,13 @@ func IsDisability(value int) string {
 	}[value]
 }
 
+func IsPermission(value int) string {
+	return map[int]string{
+		0:"student",
+		1:"teacher",
+		2:"admin",
+		3:"superadmin",
+		4:"accounting",
+		5:"operator",
+	}[value]
+}
