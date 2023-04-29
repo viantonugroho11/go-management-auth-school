@@ -3,7 +3,11 @@ package server
 import (
 	"go-management-auth-school/config"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+
+	middlewareCustom "go-management-auth-school/middlewares"
 
 	authController "go-management-auth-school/controller/auth"
 	authServices "go-management-auth-school/service/auth"
@@ -57,6 +61,13 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 
 	v1 := router.Group("/v1")
 
+	var _ = middleware.JWTConfig{
+		SigningKey: []byte(conf.JwtAuth.JwtSecretKey),
+		Claims: &jwt.StandardClaims{},
+		// Claims: 	 &authController.JwtCustomClaims{},
+	}
+
+
 	// v2 := router.Group("/v2")
 
 	// v1 api group
@@ -68,6 +79,7 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	apiUserV1.GET("/health", func(c echo.Context) error {
 		return c.JSON(200, "OK")
 	})
+	apiUserV1.Use(middlewareCustom.ValidateToken(conf))
 
 	apiAdminV1.GET("/test", func(c echo.Context) error {
 		return c.JSON(200, "OK")
