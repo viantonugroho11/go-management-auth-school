@@ -96,7 +96,7 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	majorService := majorServices.NewMajorService(majorRepo)
 	classService := classServices.NewClassService(classRepo)
 	teacherService := teacherServices.NewTeacherService(teacherRepo)
-	studentService := studentServices.NewStudentService(studentRepo)
+	studentService := studentServices.NewStudentService(studentRepo,parentRepo)
 
 	adminService := adminServices.NewAdminService(adminRepo)
 	lessonService := lessonServices.NewLessonService(lessonRepo)

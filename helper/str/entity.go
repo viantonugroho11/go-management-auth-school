@@ -26,3 +26,73 @@ func GetFullNameParent(parent parentEntity.Parent) string {
 	}
 	return parent.FirstName + " " + parent.LastName
 }
+
+func IsGender(value int) string {
+	return map[int]string{
+		1: "Male",
+		2: "Female",
+	}[value]
+}
+
+func IsReligion(value int) string {
+	return map[int]string{
+		1: "Islam",
+		2: "Protestan",
+		3: "Katolik",
+		4: "Hindu",
+		5: "Budha",
+		6: "Konghucu",
+	}[value]
+}
+
+func IsStatus(value int) string {
+	return map[int]string{
+		0: "Single",
+		1: "Married",
+	}[value]
+}
+
+func IsActiveConvert(value int) string {
+	return map[int]string{
+		0: "Active",
+		1: "Inactive",
+	}[value]
+}
+
+func IsStatusTeacher(value int) string {
+	return map[int]string{
+		0: "PNS",
+		1: "Non PNS",
+	}[value]
+}
+
+func IsTypeMapping(value int) string {
+	return map[int]string{
+		0: "Student",
+		1: "Homeroom Teacher",
+	}[value]
+}
+
+func IsTypeParent(value int) string {
+	return map[int]string{
+		0: "Parent",
+		1: "Guardian",
+		2: "Relatives",
+		3: "Others",
+	}[value]
+}
+
+func IsTypeStudent(value int) string {
+	return map[int]string{
+		0: "Student",
+		1: "Alumni",
+	}[value]
+}
+
+func IsDisability(value int) string {
+	return map[int]string{
+		0: "No",
+		1: "Yes",
+	}[value]
+}
+

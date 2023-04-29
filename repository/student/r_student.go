@@ -38,7 +38,7 @@ func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 
 func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequest.StudentParams) (data []studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + studentEntity.GroupStatement +
+	query := studentEntity.SelectStudentStatment + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + studentEntity.GroupStatement +
 		` ORDER BY def.id` + parameter.OrderBy
 
 	// query = database.SubstitutePlaceholder(query, 1)
@@ -67,7 +67,7 @@ func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequest
 
 func (repo studentRepo) FindOne(ctx context.Context, parameter *studentRequest.StudentParams) (data studentEntity.Student, err error) {
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
-	query := studentEntity.SelectUser + ` WHERE def.deleted_at IS NULL ` + whereStatment
+	query := studentEntity.SelectStudentStatment + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)

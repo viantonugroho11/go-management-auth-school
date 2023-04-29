@@ -17,6 +17,7 @@ type StudentParams struct {
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
 	JoinDate   string `json:"join_date"`
+	IncludeParent bool `json:"include_parent"`
 	controller.DefaultParameter
 }
 

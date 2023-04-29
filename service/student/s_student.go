@@ -3,10 +3,14 @@ package student
 import (
 	"context"
 	"errors"
+
 	// "log"
 
 	studentRequset "go-management-auth-school/controller/student"
 	studentEntity "go-management-auth-school/entity/student"
+
+	parentController "go-management-auth-school/controller/parent"
+	parentRepository "go-management-auth-school/service/parent"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -20,11 +24,13 @@ type StudentRepo interface {
 
 type studentService struct {
 	studentRepo StudentRepo
+	parentRepo parentRepository.ParentRepo
 }
 
-func NewStudentService(repo StudentRepo) *studentService {
+func NewStudentService(repo StudentRepo, parentRepo parentRepository.ParentRepo) *studentService {
 	return &studentService{
 		studentRepo: repo,
+		parentRepo: parentRepo,
 	}
 }
 
@@ -37,6 +43,14 @@ func (service studentService) SelectAll(ctx context.Context, parameter *studentR
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return
 	}
+
+	// add parent
+	for i, v := range data {
+		data[i].Parent, err = service.parentRepo.SelectAll(ctx, &parentController.ParentParams{
+			StudentID: v.Nis,
+		})
+	}
+	
 	return
 }
 
@@ -46,6 +60,9 @@ func (service studentService) FindOne(ctx context.Context, parameter *studentReq
 		// logger.ErrorWithStack(ctx, err, "select all user query")
 		return
 	}
+	data.Parent, err = service.parentRepo.SelectAll(ctx, &parentController.ParentParams{
+		StudentID: data.Nis,
+	})
 	return
 }
 

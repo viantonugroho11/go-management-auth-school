@@ -10,6 +10,7 @@ type ParentResponse struct {
 	ID        string `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
+	FullName  string `json:"full_name"`
 	Type      string `json:"type"`
 	Gender    int    `json:"gender"`
 	Phone     string `json:"phone"`
@@ -33,6 +34,7 @@ func FromService(res parentEntity.Parent) (data ParentResponse) {
 		ID:        res.ID,
 		FirstName: res.FirstName,
 		LastName:  res.LastName,
+		FullName:  helperStr.GetFullNameParent(res),
 		Type:      res.Type,
 		Gender:    res.Gender,
 		Phone:     res.Phone,

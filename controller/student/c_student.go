@@ -31,6 +31,7 @@ func NewStudentController(studentServices StudentService) studentController {
 
 func (ctrl studentController) InitializeRoutes(userRouter *echo.Group, adminRouter *echo.Group, staticRouter *echo.Group, authRouter *echo.Group) {
 	userRouter.GET("/all", ctrl.SelectAll())
+	userRouter.GET("/:id", ctrl.FindOne())
 	userRouter.POST("", ctrl.CreateStudent())
 }
 
@@ -48,12 +49,29 @@ func (ctrl studentController) SelectAll() echo.HandlerFunc {
 		params.Nis = c.QueryParam("nis")
 		params.FirstName = c.QueryParam("first_name")
 		params.LastName = c.QueryParam("last_name")
-		log.Println(params)
 		data, err := ctrl.studentServices.SelectAll(ctx, params)
 		if err != nil {
 			return response.RespondError(c, http.StatusBadRequest, err)
 		}
 		return response.RespondSuccess(c, http.StatusOK, FromServices(data), nil)
+	}
+}
+
+//find one
+func (ctrl studentController) FindOne() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ctx := c.Request().Context()
+		if ctx == nil {
+			ctx = context.Background()
+		}
+
+		params := new(StudentParams)
+		params.ID = c.Param("id")
+		data, err := ctrl.studentServices.FindOne(ctx, params)
+		if err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+		return response.RespondSuccess(c, http.StatusOK, FromService(data), nil)
 	}
 }
 

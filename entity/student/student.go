@@ -51,14 +51,22 @@ type Student struct {
 
 var (
 	Table  = `student`
-	Column = []string{`def.id`, `def.first_name`, `def.last_name`, `def.email`, `def.nisn`, `def.nis`,
+	ColumnStudentStatment = []string{`def.id`, `def.first_name`, `def.last_name`, `def.email`, `def.nisn`, `def.nis`,
 		`def.nik`, `def.place_of_birth`, `def.date_of_birth`, `def.phone`, `def.address`, `def.gender`,
 		`def.religion`, `def.image`, `def.status`, `def.is_active`, `def.province_id`, `def.city_id`,
 		`def.subdistrict_id`, `def.ward_id`, `def.rt`, `def.rw`, `def.height`, `def.weight`, `def.blood_type`,
 		`def.disability`, `def.disability_info`, `def.join_date`, `def.details`, `def.created_at`, `def.updated_at`,
 		`def.deleted_at`}
+		
 
-	SelectUser = `SELECT ` + strings.Join(Column, `,`) + ` FROM ` + Table + ` def`
+	ColumnParentStatment = []string{`p.id`, `p.first_name`, `p.last_name`, `p.nik`, `p.type`, `p.gender`, `p.phone`,
+		`p.work_id`, `p.work_name`, `p.income`, `p.student_id`, `p.image`}
+
+	SelectStudentStatment = `SELECT ` + strings.Join(ColumnStudentStatment, `,`) + 
+	` FROM ` + Table + ` def`
+
+	JoinStatement = ` LEFT JOIN `+parentEntity.TableName+` p ON p.student_id = def.id AND p.deleted_at IS NULL`
+
 
 	GroupStatement = ` GROUP BY def.id`
 )

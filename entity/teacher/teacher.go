@@ -1,5 +1,10 @@
 package teacher
 
+import (
+	"database/sql"
+	"strings"
+)
+
 type Teacher struct {
 	ID            string `json:"id"`
 	FirstName     string `json:"first_name"`
@@ -23,4 +28,27 @@ type Teacher struct {
 	RW            int    `json:"rw"`
 	CreatedAt     string `json:"created_at"`
 	UpdatedAt     string `json:"updated_at"`
+}
+
+var (
+	Table = "teacher"
+
+	Column = []string{`def.id`, `def.first_name`, `def.last_name`, `def.email`, `def.nik`, 
+	`def.place_of_birth`, `def.date_of_birth`, `def.phone`, `def.address`, `def.gender`, 
+	`def.religion`, `def.image`, `def.status`, `def.is_active`, `def.province_id`, `def.city_id`, 
+	`def.subdistrict_id`, `def.ward_id`, `def.rt`, `def.rw`, `def.created_at`, `def.updated_at`}
+
+	SelectStatement = `SELECT ` + strings.Join(Column, ",") + ` FROM ` + Table + ` def `
+
+	GroupStatement = ` GROUP BY def.id `
+)
+
+func (m *Teacher) ScanRows(rows *sql.Rows, row *sql.Row) error {
+	parameter := []interface{}{&m.ID, &m.FirstName, &m.LastName, &m.Email, &m.Nik, &m.PlaceOfBirth,
+	&m.DateOfBirth, &m.Phone, &m.Address, &m.ProvinceID, &m.CityID, &m.SubdistrictID, &m.WardID, &m.RT, &m.RW,
+&m.CreatedAt, &m.UpdatedAt}
+	if rows != nil {
+		return rows.Scan(parameter...)
+	}
+	return row.Scan(parameter...)
 }
