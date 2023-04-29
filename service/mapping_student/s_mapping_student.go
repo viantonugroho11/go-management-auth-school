@@ -98,7 +98,7 @@ func (service mpStudentService) checkIdentity(params *mapStudentEntity.MappingSt
 	switch params.Type {
 	case "0":
 		checkIdentityStudent, _ := service.studentServices.FindOne(ctx, &studentService.StudentParams{
-			IdentityID: params.IdentityID,
+			Nis: params.IdentityID,
 		})
 		if checkIdentityStudent.ID == "" {
 			return true, errors.New("student not found")

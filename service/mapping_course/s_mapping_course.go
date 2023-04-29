@@ -71,14 +71,11 @@ func (service mpCourseService) Create(ctx context.Context, params *mapCourseEnti
 	}
 
 	// check duplicate
-	duplicate, err := service.mpCourseRepo.FindOne(ctx, &mapCourseController.MappingCourseParams{
+	duplicate, _ := service.mpCourseRepo.FindOne(ctx, &mapCourseController.MappingCourseParams{
 		ClassID:   params.ClassID,
 		LessonID:  params.LessonID,
 		TeacherID: params.TeacherID,
 	})
-	if err != nil {
-		return err
-	}
 	if duplicate.ID != "" {
 		return errors.New("duplicate mapping course")
 	}
@@ -105,7 +102,7 @@ func (service mpCourseService) validateData(ctx context.Context, params *mapCour
 			ID: params.LessonID,
 		},
 	})
-	if err != nil || lesson.ID == "" {
+	if lesson.ID == "" {
 		return true, err
 	}
 
@@ -114,7 +111,7 @@ func (service mpCourseService) validateData(ctx context.Context, params *mapCour
 			ID: params.ClassID,
 		},
 	})
-	if err != nil || class.ID == 0 {
+	if class.ID == 0 {
 		return true, err
 	}
 
@@ -123,7 +120,7 @@ func (service mpCourseService) validateData(ctx context.Context, params *mapCour
 			ID: params.TeacherID,
 		},
 	})
-	if err != nil || teacher.ID == "" {
+	if teacher.ID == "" {
 		return true, err
 	}
 	return false, nil

@@ -97,6 +97,6 @@ func (ctrl mappingCourseController) Create() echo.HandlerFunc {
 		if err != nil {
 			return response.RespondError(c, http.StatusBadRequest, err)
 		}
-		return response.RespondSuccess(c, http.StatusOK, nil, nil)
+		return response.RespondSuccess(c, http.StatusCreated, nil, nil)
 	}
 }

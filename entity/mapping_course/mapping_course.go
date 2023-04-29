@@ -26,7 +26,7 @@ type MappingCourseReq struct {
 }
 
 var (
-	Table = "mapping_course"
+	Table = "mapping_course_teacher"
 
 	Column = []string{"def.id", "def.class_id", "def.teacher_id", "def.lesson_id"}
 
