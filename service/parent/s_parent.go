@@ -3,6 +3,7 @@ package parent
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	parentController "go-management-auth-school/controller/parent"
 	studentService "go-management-auth-school/controller/student"
@@ -54,20 +55,15 @@ func (service parentService) FindOne(ctx context.Context, params *parentControll
 // create parent
 func (service parentService) Create(ctx context.Context, params *parentEntity.Parent) (err error) {
 	// checkStudent
-	checkStudent, err := service.studentServices.FindOne(ctx, &studentService.StudentParams{})
-	if err != nil {
-		return
-	}
+	checkStudent, _ := service.studentServices.FindOne(ctx, &studentService.StudentParams{})
 	if checkStudent.ID == "" {
 		return errors.New("Student not found")
 	}
 
-	checkNikParent, err := service.parentRepo.FindOne(ctx, &parentController.ParentParams{
+	checkNikParent, _ := service.parentRepo.FindOne(ctx, &parentController.ParentParams{
 		NIK: params.NIK,
 	})
-	if err != nil {
-		return
-	}
+	fmt.Println("checkNikParent", checkNikParent)
 	if checkNikParent.ID != "" {
 		return errors.New("NIK already exist")
 	}

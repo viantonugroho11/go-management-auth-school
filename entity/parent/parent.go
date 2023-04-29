@@ -13,7 +13,6 @@ type Parent struct {
 	LastName  string `json:"last_name"`
 	NIK       string `json:"nik"`
 	Type      string `json:"type"`
-
 	Gender    int     `json:"gender"`
 	Phone     string  `json:"phone"`
 	WorkID    int     `json:"work_id"`
@@ -78,8 +77,8 @@ var (
 )
 
 func (m *Parent) ScanRows(rows *sql.Rows, row *sql.Row) error {
-	parameters := []interface{}{m.ID, m.FirstName, m.LastName, m.NIK, m.Type, m.Gender, m.Phone, m.WorkID,
-		m.WorkName, m.Income, m.StudentID, m.Image, m.CreatedAt, m.UpdatedAt}
+	parameters := []interface{}{&m.ID, &m.FirstName, &m.LastName, &m.NIK, &m.Type, &m.Gender, &m.Phone, &m.WorkID,
+		&m.WorkName, &m.Income, &m.StudentID, &m.Image, &m.CreatedAt, &m.UpdatedAt}
 	if rows != nil {
 		return rows.Scan(parameters...)
 	}

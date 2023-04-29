@@ -24,6 +24,7 @@ type ParentRequest struct {
 	LastName  string `json:"last_name"`
 	Type      string `json:"type"`
 	Gender    int    `json:"gender"`
+	NIK       string `json:"nik"`
 	Phone     string `json:"phone"`
 	WorkID    int    `json:"work_id"`
 	Income    int    `json:"income"`
@@ -47,6 +48,7 @@ func (i *ParentRequest) ToService() (res *parentEntity.Parent) {
 		LastName:  i.LastName,
 		WorkID:    i.WorkID,
 		Gender:    i.Gender,
+		NIK:       i.NIK,
 		Phone:     i.Phone,
 		Image:     i.Image,
 		Type:      i.Type,
