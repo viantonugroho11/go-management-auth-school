@@ -29,19 +29,19 @@ func NewUserRepo(dbMaster, dbSlave *sqlx.DB) *userRepo {
 func (repo userRepo) buildingParams(ctx context.Context, parameter *userRequset.UserParams) (conditionString string, conditionParam []interface{}) {
 
 	if parameter.ID != 0 {
-		conditionString += " AND id = ?"
+		conditionString += " AND def.id = ?"
 		conditionParam = append(conditionParam, parameter.ID)
 	}
 	if parameter.Username != "" {
-		conditionString += " AND username = ?"
+		conditionString += " AND def.username = ?"
 		conditionParam = append(conditionParam, parameter.Username)
 	}
 	if parameter.IdentityID != "" {
-		conditionString += " AND identity_id = ?"
+		conditionString += " AND def.identity_id = ?"
 		conditionParam = append(conditionParam, parameter.IdentityID)
 	}
 	if parameter.Permission != "" {
-		conditionString += " AND permission = ?"
+		conditionString += " AND def.permission = ?"
 		conditionParam = append(conditionParam, parameter.Permission)
 	}
 

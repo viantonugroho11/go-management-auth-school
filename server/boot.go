@@ -51,6 +51,10 @@ import (
 	teacherController "go-management-auth-school/controller/teacher"
 	teacherRepository "go-management-auth-school/repository/teacher"
 	teacherServices "go-management-auth-school/service/teacher"
+
+	verifyTokenController "go-management-auth-school/controller/verify_token"
+	verifyTokenRepository "go-management-auth-school/repository/verify_token"
+	verifyTokenServices "go-management-auth-school/service/verify_token"
 )
 
 func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
@@ -103,12 +107,14 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	parentRepo := parentRepository.NewParentRepo(config.MasterDB, config.SlaveDB)
 	studentRepo := studentRepository.NewStudentRepo(config.MasterDB, config.SlaveDB)
 	teacherRepo := teacherRepository.NewTeacherRepo(config.MasterDB, config.SlaveDB)
+	verifyTokenRepo := verifyTokenRepository.NewVerifyTokenRepo(config.MasterDB, config.SlaveDB)
 
 	// service start
 	majorService := majorServices.NewMajorService(majorRepo)
 	classService := classServices.NewClassService(classRepo)
 	teacherService := teacherServices.NewTeacherService(teacherRepo)
 	studentService := studentServices.NewStudentService(studentRepo,parentRepo)
+	verifyTokenService := verifyTokenServices.NewVerifyTokenService(verifyTokenRepo)
 
 	adminService := adminServices.NewAdminService(adminRepo)
 	lessonService := lessonServices.NewLessonService(lessonRepo)
@@ -118,8 +124,9 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	// mapping
 	mapCourseService := mappingCourseServices.NewMappingCourseService(mpCourseRepo, lessonService, classService, teacherService)
 	mappingStudentService := mappingStudentServices.NewMappingStudentService(mpStudentRepo, studentService, teacherService, classService)
-	authService := authServices.NewAuthService(userRepo, conf, mapCourseService, studentService, mappingStudentService, userService)
+	authService := authServices.NewAuthService(userRepo, conf, mapCourseService, studentService, mappingStudentService, userService, verifyTokenRepo)
 	// service end
+
 
 	adminRouter := "/admin"
 	adminUserRouter := apiUserV1.Group(adminRouter)
@@ -209,6 +216,13 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	teacherControllers := teacherController.NewTeacherController(teacherService)
 	teacherControllers.InitializeRoutes(teacherUserRouter, teacherAdminRouter, teacherStaticRouter, teacherAuthRouter)
 
+	verifyTokenRouter := "/verifyToken"
+	_ = apiUserV1.Group(verifyTokenRouter)
+	_ = apiAdminV1.Group(verifyTokenRouter)
+	_ = apiStaticv1.Group(verifyTokenRouter)
+	_ = apiAuthV1.Group(verifyTokenRouter)
+	_ = verifyTokenController.NewVerifyTokenController(verifyTokenService)
+	// verifyTokenControllers.InitializeRoutes(verifyTokenUserRouter, verifyTokenAdminRouter, verifyTokenStaticRouter, verifyTokenAuthRouter)
 	// v2 api group
 	// apiUserV2 := v2.Group("/apiUser")
 	// apiAdminV2 := v2.Group("/apiAdmin")

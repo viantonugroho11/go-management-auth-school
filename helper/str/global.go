@@ -273,3 +273,13 @@ func RemoveString(s string, index, length int) string {
 func ConvertUnixToTime(unix int64) time.Time {
 	return time.Unix(unix, 0)
 }
+
+// convert time to int64 (unix)
+func ConvertTimeToUnix(t time.Time) int64 {
+	return t.Unix()
+}
+
+// convert time to string
+func ConvertTimeToString(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05")
+}

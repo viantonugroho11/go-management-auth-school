@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"errors"
-	"fmt"
 	configurable "go-management-auth-school/config"
 	authLoginRequest "go-management-auth-school/controller/auth"
 	mappingCourseServices "go-management-auth-school/controller/mapping_course"
@@ -16,19 +15,23 @@ import (
 	authEntity "go-management-auth-school/entity/auth"
 	userEntity "go-management-auth-school/entity/user"
 
+	//repo
+	verifyTokenRepo "go-management-auth-school/service/verify_token"
+	verifyTokenEntity "go-management-auth-school/entity/verify_token"
+	verifyTokenController "go-management-auth-school/controller/verify_token"
+
 	//controller
 	// studentController "go-management-auth-school/controller/student"
 	// teacherController "go-management-auth-school/controller/teacher"
 
-
 	// "go-management-auth-school/entity/class"
 	jwthelper "go-management-auth-school/helper/jwt"
 	timeHelper "go-management-auth-school/helper/time"
+	strHelper "go-management-auth-school/helper/str"
 
 	// validasiHelper "go-management-auth-school/helper/validasi"
 	userRepo "go-management-auth-school/service/user"
 	"time"
-
 
 	//helper
 	helperStr "go-management-auth-school/helper/str"
@@ -48,11 +51,13 @@ type AuthService struct {
 	studentService    studentServices.StudentService
 	mapStudentService mapStudent.MappingStudentService
 	userService       userController.UserService
+	verifyTokenRepo 	verifyTokenRepo.VerifyTokenRepo
 }
 
 func NewAuthService(repo userRepo.UserRepo, config configurable.Config,
 	mapCourseService mappingCourseServices.MappingCourseService, studentService studentServices.StudentService,
-	mapStudentService mapStudent.MappingStudentService, userService userController.UserService) *AuthService {
+	mapStudentService mapStudent.MappingStudentService, userService userController.UserService,
+	verifyTokenRepository verifyTokenRepo.VerifyTokenRepo) *AuthService {
 	return &AuthService{
 		userRepo:          repo,
 		config:            config,
@@ -60,6 +65,7 @@ func NewAuthService(repo userRepo.UserRepo, config configurable.Config,
 		studentService:    studentService,
 		mapStudentService: mapStudentService,
 		userService:       userService,
+		verifyTokenRepo: 	verifyTokenRepository,
 	}
 }
 
@@ -106,6 +112,32 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 		IdentityID: dataUser.IdentityID,
 	})
 	if err != nil {
+		return
+	}
+
+	//check token exist
+	verifyToken, err := service.verifyTokenRepo.FindOne(ctx, &verifyTokenController.VerifyTokenParams{
+		Identity: dataUser.IdentityID,
+	})
+	if verifyToken.ID != "" {
+		err = service.verifyTokenRepo.Delete(ctx, tx, &verifyTokenEntity.VerifyToken{
+			Identity: dataUser.IdentityID,
+		})
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+	}
+
+	// insert verify token
+	err = service.verifyTokenRepo.Create(ctx, tx, &verifyTokenEntity.VerifyToken{
+		Identity: dataUser.IdentityID,
+		Token: token,
+		ExpiredAt: strHelper.ConvertTimeToString(tokenExpireTime),
+	})
+
+	if err != nil {
+		tx.Rollback()
 		return
 	}
 
@@ -201,6 +233,7 @@ func (service AuthService) RegisterStudent(ctx context.Context, input *userEntit
 
 func (service AuthService) ValidateToken(ctx context.Context, token string) (data authEntity.AuthValidate, err error) {
 
+	var check bool
 	tokenBearer := strings.Split(token, " ")
 	if len(tokenBearer) == 2 {
 		token = tokenBearer[1]
@@ -230,10 +263,20 @@ func (service AuthService) ValidateToken(ctx context.Context, token string) (dat
 		id := claims.Id
 		data.Identity = id
 		data.ExpiredAt = claims.ExpiresAt
-		fmt.Println("id: ", id)
-		if data.ExpiredAt < time.Now().Unix() {
-      return data, errors.New("token expired")
-    }
+		claims.ExpiresAt, check = jwthelper.JwtCheckExpiredAt(claims.ExpiresAt, service.config.JwtAuth.JwtExpireTime)
+		if check {
+			return data, errors.New("token expired")
+		}
+
+		// check token in database
+		verifyToken, _ := service.verifyTokenRepo.FindOne(ctx, &verifyTokenController.VerifyTokenParams{
+			Identity: id,
+			Token:      token,
+		})
+		if verifyToken.ID == "" {
+			return data, errors.New("invalid token")
+		}
+
 
 		// get data from database
 		data.User, err = service.userRepo.FindOne(ctx, &userController.UserParams{
