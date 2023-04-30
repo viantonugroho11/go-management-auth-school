@@ -2,7 +2,6 @@ package verify_token
 
 import (
 	"context"
-	"fmt"
 	verifyTokenRequest "go-management-auth-school/controller/verify_token"
 	verifyTokenEntity "go-management-auth-school/entity/verify_token"
 
@@ -38,9 +37,6 @@ func (repo verifyTokenRepo) FindOne(ctx context.Context, parameter *verifyTokenR
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
 	query := verifyTokenEntity.SelectStatement + ` WHERE def.deleted_at is null ` + whereStatment +
 		` ORDER BY def.id` + parameter.OrderBy
-
-	fmt.Println(query)
-
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 

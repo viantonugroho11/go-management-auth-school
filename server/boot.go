@@ -83,7 +83,7 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	apiUserV1.GET("/health", func(c echo.Context) error {
 		return c.JSON(200, "OK")
 	})
-	apiUserV1.Use(middlewareCustom.ValidateToken(conf))
+	
 
 	apiAdminV1.GET("/test", func(c echo.Context) error {
 		return c.JSON(200, "OK")
@@ -127,6 +127,8 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	authService := authServices.NewAuthService(userRepo, conf, mapCourseService, studentService, mappingStudentService, userService, verifyTokenRepo)
 	// service end
 
+	// router use
+	apiUserV1.Use(middlewareCustom.ValidateToken(conf,verifyTokenRepo))
 
 	adminRouter := "/admin"
 	adminUserRouter := apiUserV1.Group(adminRouter)

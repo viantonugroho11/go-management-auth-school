@@ -114,7 +114,6 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	if err != nil {
 		return
 	}
-	
 
 	//check token exist
 	verifyToken, err := service.verifyTokenRepo.FindOne(ctx, &verifyTokenController.VerifyTokenParams{
@@ -142,7 +141,6 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	}
 
 	tx.Commit()
-	
 
 	data = authEntity.Auth{
 		Identity: dataUser.IdentityID,
