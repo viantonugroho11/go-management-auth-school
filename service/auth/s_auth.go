@@ -16,9 +16,9 @@ import (
 	userEntity "go-management-auth-school/entity/user"
 
 	//repo
-	verifyTokenRepo "go-management-auth-school/service/verify_token"
-	verifyTokenEntity "go-management-auth-school/entity/verify_token"
 	verifyTokenController "go-management-auth-school/controller/verify_token"
+	verifyTokenEntity "go-management-auth-school/entity/verify_token"
+	verifyTokenRepo "go-management-auth-school/service/verify_token"
 
 	//controller
 	// studentController "go-management-auth-school/controller/student"
@@ -26,8 +26,8 @@ import (
 
 	// "go-management-auth-school/entity/class"
 	jwthelper "go-management-auth-school/helper/jwt"
-	timeHelper "go-management-auth-school/helper/time"
 	strHelper "go-management-auth-school/helper/str"
+	timeHelper "go-management-auth-school/helper/time"
 
 	// validasiHelper "go-management-auth-school/helper/validasi"
 	userRepo "go-management-auth-school/service/user"
@@ -51,7 +51,7 @@ type AuthService struct {
 	studentService    studentServices.StudentService
 	mapStudentService mapStudent.MappingStudentService
 	userService       userController.UserService
-	verifyTokenRepo 	verifyTokenRepo.VerifyTokenRepo
+	verifyTokenRepo   verifyTokenRepo.VerifyTokenRepo
 }
 
 func NewAuthService(repo userRepo.UserRepo, config configurable.Config,
@@ -65,7 +65,7 @@ func NewAuthService(repo userRepo.UserRepo, config configurable.Config,
 		studentService:    studentService,
 		mapStudentService: mapStudentService,
 		userService:       userService,
-		verifyTokenRepo: 	verifyTokenRepository,
+		verifyTokenRepo:   verifyTokenRepository,
 	}
 }
 
@@ -114,25 +114,25 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	if err != nil {
 		return
 	}
+	
 
 	//check token exist
 	verifyToken, err := service.verifyTokenRepo.FindOne(ctx, &verifyTokenController.VerifyTokenParams{
 		Identity: dataUser.IdentityID,
 	})
 	if verifyToken.ID != "" {
-		err = service.verifyTokenRepo.Delete(ctx, tx, &verifyTokenEntity.VerifyToken{
+		err = service.verifyTokenRepo.Delete(ctx, nil, &verifyTokenEntity.VerifyToken{
 			Identity: dataUser.IdentityID,
 		})
 		if err != nil {
-			tx.Rollback()
 			return
 		}
 	}
 
 	// insert verify token
-	err = service.verifyTokenRepo.Create(ctx, tx, &verifyTokenEntity.VerifyToken{
-		Identity: dataUser.IdentityID,
-		Token: token,
+	err = service.verifyTokenRepo.Create(ctx, nil, &verifyTokenEntity.VerifyToken{
+		Identity:  dataUser.IdentityID,
+		Token:     token,
 		ExpiredAt: strHelper.ConvertTimeToString(tokenExpireTime),
 	})
 
@@ -142,6 +142,7 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	}
 
 	tx.Commit()
+	
 
 	data = authEntity.Auth{
 		Identity: dataUser.IdentityID,
@@ -271,12 +272,11 @@ func (service AuthService) ValidateToken(ctx context.Context, token string) (dat
 		// check token in database
 		verifyToken, _ := service.verifyTokenRepo.FindOne(ctx, &verifyTokenController.VerifyTokenParams{
 			Identity: id,
-			Token:      token,
+			Token:    token,
 		})
 		if verifyToken.ID == "" {
 			return data, errors.New("invalid token")
 		}
-
 
 		// get data from database
 		data.User, err = service.userRepo.FindOne(ctx, &userController.UserParams{
