@@ -26,14 +26,14 @@ mysql:
   maxOpenConnections: 4
   maxIdleConnections: 2
   master:
-    host: localhost
+    host: db4free.net
     port: 3306
-    database: management_auth_db
-    username: root
-    password: 
+    database: management_auth
+    username: viantonugroho_db
+    password: Vianto1125!@
   slave:
-    host: localhost
+    host: db4free.net
     port: 3306
-    database: management_auth_db
-    username: root
-    password: 
+    database: management_auth
+    username: viantonugroho_db
+    password: Vianto1125!@

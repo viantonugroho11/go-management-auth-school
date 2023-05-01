@@ -14,6 +14,12 @@ jwtAuth:
   jwtExpire: 72
 # jwt expire in Hour
 
+authClient:
+  baseURL: http://localhost:1325
+  retryCount: 0
+  retryWaitTime: 3
+  timeout: 60
+
 
 # postgres database local
 mysql:
