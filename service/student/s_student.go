@@ -67,7 +67,7 @@ func (service studentService) FindOne(ctx context.Context, parameter *studentReq
 }
 
 func (service studentService) Create(ctx context.Context, input *studentEntity.Student) (err error) {
-	checkStudent, err := service.studentRepo.SelectAll(ctx, &studentRequset.StudentParams{
+	checkStudent, err := service.studentRepo.FindOne(ctx, &studentRequset.StudentParams{
 		Nis:  input.Nis,
 		Nisn: input.Nisn,
 	})
@@ -75,7 +75,7 @@ func (service studentService) Create(ctx context.Context, input *studentEntity.S
 		return
 	}
 
-	if len(checkStudent) > 0 {
+	if checkStudent.Nis != "" || checkStudent.Nisn != "" {
 		err = errors.New("NIS already exist")
 		return
 	}

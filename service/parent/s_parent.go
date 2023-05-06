@@ -54,12 +54,12 @@ func (service parentService) FindOne(ctx context.Context, params *parentControll
 // create parent
 func (service parentService) Create(ctx context.Context, params *parentEntity.Parent) (err error) {
 	// checkStudent
-	checkStudent, _ := service.studentServices.FindOne(ctx, &studentService.StudentParams{})
+	checkStudent, err := service.studentServices.FindOne(ctx, &studentService.StudentParams{})
 	if checkStudent.ID == "" {
 		return errors.New("Student not found")
 	}
 
-	checkNikParent, _ := service.parentRepo.FindOne(ctx, &parentController.ParentParams{
+	checkNikParent, err := service.parentRepo.FindOne(ctx, &parentController.ParentParams{
 		NIK: params.NIK,
 	})
 	if checkNikParent.ID != "" {
