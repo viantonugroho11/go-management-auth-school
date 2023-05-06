@@ -46,7 +46,7 @@ func (repo mpCourseRepo) SelectAll(ctx context.Context, parameter *mpCourseContr
 	query := mpCourseEntity.SelectMapCourse + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return
 	}
 	defer rows.Close()
@@ -54,14 +54,14 @@ func (repo mpCourseRepo) SelectAll(ctx context.Context, parameter *mpCourseContr
 	for rows.Next() {
 		d := mpCourseEntity.MappingCourse{}
 		err = d.ScanRows(rows, nil)
-		if err != nil {
+		if err != sql.ErrNoRows {
 			return nil, err
 		}
 		data = append(data, d)
 	}
 
 	err = rows.Err()
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return
 	}
 
@@ -76,7 +76,7 @@ func (repo mpCourseRepo) FindOne(ctx context.Context, params *mpCourseController
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return
 	}
 	return

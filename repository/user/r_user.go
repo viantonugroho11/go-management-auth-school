@@ -86,11 +86,11 @@ func (repo userRepo) FindOne(ctx context.Context, parameter *userRequset.UserPar
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return
 	}
 	err = data.ScanRows(nil, row)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return
 	}
 

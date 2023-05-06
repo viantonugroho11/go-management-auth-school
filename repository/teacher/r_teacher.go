@@ -62,7 +62,7 @@ func (repo teacherRepo) SelectAll(ctx context.Context, parameter *teacherControl
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return nil, err
 	}
 	defer rows.Close()
@@ -70,7 +70,7 @@ func (repo teacherRepo) SelectAll(ctx context.Context, parameter *teacherControl
 	for rows.Next() {
 		temp := teacherEntity.Teacher{}
 		err = temp.ScanRows(rows, nil)
-		if err != nil {
+		if err != sql.ErrNoRows {
 			return nil, err
 		}
 		data = append(data, temp)
@@ -87,7 +87,7 @@ func (repo teacherRepo) FindOne(ctx context.Context, params *teacherController.T
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return
 	}
 	return
@@ -95,7 +95,7 @@ func (repo teacherRepo) FindOne(ctx context.Context, params *teacherController.T
 
 func (repo teacherRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	tx, err = repo.DbMaster.BeginTxx(ctx, &sql.TxOptions{})
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return
 	}
 	return
