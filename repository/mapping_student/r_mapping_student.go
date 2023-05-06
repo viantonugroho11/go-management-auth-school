@@ -67,7 +67,7 @@ func (repo mpStudentRepo) SelectAll(ctx context.Context, parameter *mapStudentCo
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 	defer rows.Close()
@@ -75,14 +75,14 @@ func (repo mpStudentRepo) SelectAll(ctx context.Context, parameter *mapStudentCo
 	for rows.Next() {
 		temp := mapStudentEntity.MappingStudent{}
 		err = temp.ScanRows(rows, nil)
-		if err != sql.ErrNoRows {
+		if err != sql.ErrNoRows && err != nil {
 			return
 		}
 		data = append(data, temp)
 	}
 
 	err = rows.Err()
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 
@@ -96,7 +96,7 @@ func (repo mpStudentRepo) FindOne(ctx context.Context, parameter *mapStudentCont
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 

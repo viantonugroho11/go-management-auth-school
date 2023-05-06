@@ -73,11 +73,12 @@ func (service AuthService) Login(ctx context.Context, parameter *authLoginReques
 	dataUser, err := service.userRepo.FindOne(ctx, &userController.UserParams{
 		Username: parameter.Username,
 	})
+
 	if err != nil {
-		return
+		return data, err
 	}
 	if dataUser.ID == "" {
-		return
+		return data,errors.New("user not found")
 	}
 
 	// compare password

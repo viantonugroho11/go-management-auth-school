@@ -41,7 +41,7 @@ func (repo lessonRepo) SelectAll(ctx context.Context, parameter *lessonControlle
 	query := lessonEntity.SelectStatment + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -49,7 +49,7 @@ func (repo lessonRepo) SelectAll(ctx context.Context, parameter *lessonControlle
 	for rows.Next() {
 		d := lessonEntity.Lesson{}
 		err = d.ScanRows(rows, nil)
-		if err != sql.ErrNoRows {
+		if err != sql.ErrNoRows && err != nil {
 			return nil, err
 		}
 		data = append(data, d)
@@ -63,11 +63,11 @@ func (repo lessonRepo) FindOne(ctx context.Context, params *lessonController.Les
 	query := lessonEntity.SelectStatment + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return data, err
 	}
 	err = data.ScanRows(nil, row)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return data, err
 	}
 

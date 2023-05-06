@@ -25,8 +25,6 @@ func NewStudentRepo(dbMaster, dbSlave *sqlx.DB) *studentRepo {
 	}
 }
 
-
-
 func (repo studentRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	tx, err = repo.DbMaster.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
@@ -43,7 +41,7 @@ func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequest
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 	defer rows.Close()
@@ -51,14 +49,14 @@ func (repo studentRepo) SelectAll(ctx context.Context, parameter *studentRequest
 	for rows.Next() {
 		temp := studentEntity.Student{}
 		err = temp.ScanRows(rows, nil)
-		if err != sql.ErrNoRows {
+		if err != sql.ErrNoRows && err != nil {
 			return
 		}
 		data = append(data, temp)
 	}
 
 	err = rows.Err()
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 
@@ -72,7 +70,7 @@ func (repo studentRepo) FindOne(ctx context.Context, parameter *studentRequest.S
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 

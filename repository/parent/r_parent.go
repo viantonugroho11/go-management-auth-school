@@ -62,7 +62,7 @@ func (repo parentRepo) SelectAll(ctx context.Context, parameter *parentControlle
 
 	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 	defer rows.Close()
@@ -70,7 +70,7 @@ func (repo parentRepo) SelectAll(ctx context.Context, parameter *parentControlle
 	for rows.Next() {
 		temp := parentEntity.Parent{}
 		err = temp.ScanRows(rows, nil)
-		if err != sql.ErrNoRows {
+		if err != nil {
 			return
 		}
 		data = append(data, temp)
@@ -90,7 +90,7 @@ func (repo parentRepo) FindOne(ctx context.Context, params *parentController.Par
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 

@@ -42,7 +42,7 @@ func (repo majorRepo) SelectAll(ctx context.Context, parameter *majorController.
 	query := majorEntity.Select + ` WHERE def.deleted_at IS NULL ` + whereStatment
 
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -50,14 +50,14 @@ func (repo majorRepo) SelectAll(ctx context.Context, parameter *majorController.
 	for rows.Next() {
 		d := majorEntity.Major{}
 		err = d.ScanRows(rows, nil)
-		if err != sql.ErrNoRows {
+		if err != sql.ErrNoRows && err != nil {
 			return nil, err
 		}
 		data = append(data, d)
 	}
 
 	err = rows.Err()
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return
 	}
 
@@ -70,7 +70,7 @@ func (repo majorRepo) FindOne(ctx context.Context, params *majorController.Major
 
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
-	if err != sql.ErrNoRows {
+	if err != sql.ErrNoRows && err != nil {
 		return data, err
 	}
 
