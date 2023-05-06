@@ -60,7 +60,7 @@ func (repo verifyTokenRepo) Create(ctx context.Context, tx *sqlx.Tx, parameter *
 	queries := InsertVerifyToken
 	uuidRandom := uuid.New().String()
 	if tx != nil {
-		_, err = tx.QueryContext(ctx, queries, uuidRandom, parameter.Identity, parameter.Token, parameter.ExpiredAt)
+		_, err = tx.ExecContext(ctx, queries, uuidRandom, parameter.Identity, parameter.Token, parameter.ExpiredAt)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ func (repo verifyTokenRepo) Create(ctx context.Context, tx *sqlx.Tx, parameter *
 func (repo verifyTokenRepo) Delete(ctx context.Context, tx *sqlx.Tx, parameter *verifyTokenEntity.VerifyToken) (err error) {
 	queries := DeleteVerifyToken
 	if tx != nil {
-		_, err = tx.QueryContext(ctx, queries, parameter.Identity)
+		_, err = tx.ExecContext(ctx, queries, parameter.Identity)
 		if err != nil {
 			return err
 		}

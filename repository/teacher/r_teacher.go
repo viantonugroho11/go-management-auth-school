@@ -45,7 +45,7 @@ func (repo teacherRepo) FindAll(ctx context.Context, params *teacherController.T
 	// whereStatment, conditionParam := repo.buildingParams(ctx, params)
 	// query := teacherEntity.SelectStatement + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + teacherEntity.GroupStatement +
 	// 	` ORDER BY def.id` + params.OrderBy
-	
+
 	// // query = database.SubstitutePlaceholder(query, 1)
 	// rows := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	// err = data.
@@ -59,11 +59,11 @@ func (repo teacherRepo) SelectAll(ctx context.Context, parameter *teacherControl
 	whereStatment, conditionParam := repo.buildingParams(ctx, parameter)
 	query := teacherEntity.SelectStatement + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + teacherEntity.GroupStatement +
 		` ORDER BY def.id` + parameter.OrderBy
-	
+
 	// query = database.SubstitutePlaceholder(query, 1)
 	rows, err := repo.DbSlave.QueryContext(ctx, query, conditionParam...)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -71,7 +71,7 @@ func (repo teacherRepo) SelectAll(ctx context.Context, parameter *teacherControl
 		temp := teacherEntity.Teacher{}
 		err = temp.ScanRows(rows, nil)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 		data = append(data, temp)
 	}
@@ -83,7 +83,7 @@ func (repo teacherRepo) FindOne(ctx context.Context, params *teacherController.T
 	whereStatment, conditionParam := repo.buildingParams(ctx, params)
 	query := teacherEntity.SelectStatement + ` WHERE def.deleted_at IS NULL ` + whereStatment + ` ` + teacherEntity.GroupStatement +
 		` ORDER BY def.id` + params.OrderBy
-	
+
 	// query = database.SubstitutePlaceholder(query, 1)
 	row := repo.DbSlave.QueryRowContext(ctx, query, conditionParam...)
 	err = data.ScanRows(nil, row)
@@ -101,14 +101,12 @@ func (repo teacherRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	return
 }
 
-
 // create
 func (repo teacherRepo) Create(ctx context.Context, tx *sqlx.Tx, params *teacherEntity.Teacher) (err error) {
 	queries := InsertTeacher
 
-
 	uuidRandom := uuid.New().String()
-	_,err = tx.QueryContext(ctx,queries,uuidRandom,
+	_, err = tx.ExecContext(ctx, queries, uuidRandom,
 		params.FirstName,
 		params.LastName,
 		params.Email,
@@ -121,7 +119,7 @@ func (repo teacherRepo) Create(ctx context.Context, tx *sqlx.Tx, params *teacher
 		params.Religion,
 		params.Image,
 		1, // 1, status
-		1,// 1, is_active
+		1, // 1, is_active
 		params.ProvinceID,
 		params.CityID,
 		params.SubdistrictID,

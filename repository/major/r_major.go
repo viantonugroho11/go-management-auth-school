@@ -79,7 +79,7 @@ func (repo majorRepo) FindOne(ctx context.Context, params *majorController.Major
 
 func (repo majorRepo) Create(ctx context.Context, tx *sqlx.Tx, params *majorEntity.Major) (err error) {
 	queries := InsertMajor
-	_, err = tx.QueryContext(ctx, queries, params.Name)
+	_, err = tx.ExecContext(ctx, queries, params.Name)
 	if err != nil {
 		return err
 	}

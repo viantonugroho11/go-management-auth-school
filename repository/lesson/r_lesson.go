@@ -77,7 +77,7 @@ func (repo lessonRepo) FindOne(ctx context.Context, params *lessonController.Les
 func (repo lessonRepo) Create(ctx context.Context, tx *sqlx.Tx, params *lessonEntity.Lesson) (err error) {
 	queries := InsertLesson
 	uuidRandom := uuid.New().String()
-	_, err = tx.QueryContext(ctx, queries, uuidRandom, params.Name, params.Type)
+	_, err = tx.ExecContext(ctx, queries, uuidRandom, params.Name, params.Type)
 	if err != nil {
 		return err
 	}

@@ -78,7 +78,7 @@ func (repo classRepo) FindOne(ctx context.Context, params *classController.Class
 func (repo classRepo) Create(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error) {
 	// build query here
 	queries := InsertClass
-	_, err = tx.QueryContext(ctx, queries, params.Name, params.MajorID, params.Level)
+	_, err = tx.ExecContext(ctx, queries, params.Name, params.MajorID, params.Level)
 	if err != nil {
 		return err
 	}
