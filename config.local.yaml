@@ -1,5 +1,5 @@
 env: local
-port: 1325
+port: 1324
 apiTokenKey: secret
 schedulerTokenKey: secret
 callbackTokenKey: secret
