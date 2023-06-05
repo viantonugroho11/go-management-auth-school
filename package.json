@@ -1,0 +1,15 @@
+{
+  "name": "go-management-auth-school",
+  "version": "1.0.0",
+  "repository": "https://github.com/viantonugroho11/go-management-auth-school/",
+  "author": "Muhammad Novianto Nugroho <https:///>",
+  "license": "MIT",
+  "dependencies": {
+    "vercel": "^28.16.12"
+  },
+  "scripts": {
+    "setup": "yarn vercel login && yarn vercel link",
+    "start": "yarn vercel dev",
+    "dev": "yarn start"
+  }
+}
