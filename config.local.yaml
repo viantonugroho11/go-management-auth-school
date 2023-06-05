@@ -25,15 +25,28 @@ authClient:
 mysql:
   maxOpenConnections: 4
   maxIdleConnections: 2
+  # master:
+  #   host: localhost
+  #   port: 3306
+  #   database: management_auth_db
+  #   username: root
+  #   password: 
+  # slave:
+  #   host: localhost
+  #   port: 3306
+  #   database: management_auth_db
+  #   username: root
+  #   password: 
+
   master:
-    host: localhost
+    host: 85.10.205.173
     port: 3306
-    database: management_auth_db
-    username: root
-    password: 
+    database: managementauthdb
+    username: viantoauth
+    password: Vianto00123
   slave:
-    host: localhost
+    host: 85.10.205.173
     port: 3306
-    database: management_auth_db
-    username: root
-    password: 
+    database: managementauthdb
+    username: viantoauth
+    password: Vianto00123
