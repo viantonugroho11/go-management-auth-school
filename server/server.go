@@ -10,6 +10,9 @@ import (
 	// echo
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	"os"
+	"github.com/joho/godotenv"
 )
 
 type RestServer struct{}
@@ -21,6 +24,13 @@ func New() *RestServer {
 func (s *RestServer) Start() {
 	conf := config.New()
 	ctx := context.Background()
+
+
+	// railway or heroku
+	err := godotenv.Load()
+  if err != nil {
+    log.Fatal("Error loading .env file")
+  }
 
 	router := echo.New()
 
@@ -38,11 +48,12 @@ func (s *RestServer) Start() {
 
 	// Setup http server
 	srv := http.Server{
-		Addr:    fmt.Sprintf(":%d", conf.Port),
+		Addr:    fmt.Sprintf(":%s", os.Getenv("PORT")),
 		Handler: router,
 	}
 
-	log.Print(ctx, "Listening on port %d", conf.Port)
+	fmt.Println("Listening on port", os.Getenv("PORT"))
+	log.Print(ctx, "Listening on port %s", os.Getenv("PORT"))
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatal(ctx, "%v", err)
 	}
