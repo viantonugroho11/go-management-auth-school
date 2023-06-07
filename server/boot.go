@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	middlewareCustom "go-management-auth-school/middlewares"
+	// middlewareCustom "go-management-auth-school/middlewares"
 
 	authController "go-management-auth-school/controller/auth"
 	authServices "go-management-auth-school/service/auth"
@@ -128,7 +128,7 @@ func InitApp(router *echo.Echo, conf config.Config, unitTest bool) {
 	// service end
 
 	// router use
-	apiUserV1.Use(middlewareCustom.ValidateToken(conf,verifyTokenRepo))
+	// apiUserV1.Use(middlewareCustom.ValidateToken(conf,verifyTokenRepo))
 
 	adminRouter := "/admin"
 	adminUserRouter := apiUserV1.Group(adminRouter)
