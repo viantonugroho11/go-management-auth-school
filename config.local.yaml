@@ -23,8 +23,8 @@ authClient:
 
 # postgres database local
 mysql:
-  maxOpenConnections: 4
-  maxIdleConnections: 2
+  maxOpenConnections: 8
+  maxIdleConnections: 4
   # master:
   #   host: localhost
   #   port: 3306
