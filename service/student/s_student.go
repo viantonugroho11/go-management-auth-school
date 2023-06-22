@@ -2,6 +2,7 @@ package student
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	// "log"
@@ -71,7 +72,7 @@ func (service studentService) Create(ctx context.Context, input *studentEntity.S
 		Nis:  input.Nis,
 		Nisn: input.Nisn,
 	})
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return
 	}
 
