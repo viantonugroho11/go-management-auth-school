@@ -298,3 +298,8 @@ func (service AuthService) ValidateToken(ctx context.Context, token string) (dat
 	}
 	return data, err
 }
+
+// refresh token
+func (service AuthService) RefreshToken(ctx context.Context, token string) (data authEntity.Auth, err error) {
+return
+}

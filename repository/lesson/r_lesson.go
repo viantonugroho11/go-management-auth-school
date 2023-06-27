@@ -91,3 +91,35 @@ func (repo lessonRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	}
 	return
 }
+
+func (repo lessonRepo) Update(ctx context.Context, tx *sqlx.Tx, params *lessonEntity.Lesson) (err error) {
+	queries := `UPDATE lesson SET name = ?, type = ? WHERE id = ? AND deleted_at IS NULL`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.Name, params.Type, params.ID)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.Name, params.Type, params.ID)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (repo lessonRepo) Delete(ctx context.Context, tx *sqlx.Tx, params *lessonEntity.Lesson) (err error) {
+	queries := `UPDATE lesson SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.ID)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.ID)
+	if err != nil {
+		return err
+	}
+	return
+}

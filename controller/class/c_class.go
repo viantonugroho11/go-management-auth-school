@@ -3,6 +3,7 @@ package class
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 
@@ -15,6 +16,8 @@ type ClassService interface {
 	SelectAll(ctx context.Context, parameter *ClassParams) (data []classEntity.Class, err error)
 	FindOne(ctx context.Context, params *ClassParams) (data classEntity.Class, err error)
 	Create(ctx context.Context, params *classEntity.Class) (err error)
+	Update(ctx context.Context, params *classEntity.Class) (err error)
+	Delete(ctx context.Context, params *classEntity.Class) (err error)
 }
 
 type classController struct {
@@ -31,6 +34,8 @@ func (ctrl classController) InitializeRoutes(userRouter *echo.Group, adminRouter
 	userRouter.GET("/:id", ctrl.FindOne())
 	userRouter.GET("/all", ctrl.SelectAll())
 	userRouter.POST("", ctrl.Create())
+	userRouter.PUT("/:id", ctrl.Update())
+	userRouter.DELETE("/:id", ctrl.Delete())
 }
 
 // get one
@@ -84,9 +89,57 @@ func (ctrl classController) Create() echo.HandlerFunc {
 		if err = reqData.Validate(); err != nil {
 			return response.RespondError(c, http.StatusBadRequest, err)
 		}
+		id, err := strconv.Atoi(c.Param("id"))
+		reqData.ToService().ID = id
 
 		params := reqData.ToService()
 		err = ctrl.classService.Create(ctx, params)
+		if err != nil {
+			return response.RespondError(c, http.StatusInternalServerError, err)
+		}
+		return response.RespondSuccess(c, http.StatusCreated, nil, nil)
+	}
+}
+
+// update
+func (ctrl classController) Update() echo.HandlerFunc {
+	return func(c echo.Context) (err error) {
+		ctx := c.Request().Context()
+		if ctx == nil {
+			ctx = context.Background()
+		}
+		reqData := new(ClassRequest)
+		// string to int
+		id, err := strconv.Atoi(c.Param("id"))
+		reqData.ToService().ID = id
+
+		params := reqData.ToService()
+		err = ctrl.classService.Update(ctx, params)
+		if err != nil {
+			return response.RespondError(c, http.StatusInternalServerError, err)
+		}
+		return response.RespondSuccess(c, http.StatusCreated, nil, nil)
+	}
+}
+
+// delete
+func (ctrl classController) Delete() echo.HandlerFunc {
+	return func(c echo.Context) (err error) {
+		ctx := c.Request().Context()
+		if ctx == nil {
+			ctx = context.Background()
+		}
+		reqData := new(ClassRequest)
+		if err = c.Bind(reqData); err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+
+		if err = reqData.Validate(); err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+
+		params := reqData.ToService()
+		err = ctrl.classService.Delete(ctx, params)
 		if err != nil {
 			return response.RespondError(c, http.StatusInternalServerError, err)
 		}

@@ -93,3 +93,35 @@ func (repo majorRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	}
 	return
 }
+
+func (repo majorRepo) Update(ctx context.Context, tx *sqlx.Tx, params *majorEntity.Major) (err error) {
+	queries := `UPDATE major SET name = ? WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.Name, params.ID)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.Name, params.ID)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (repo majorRepo) Delete(ctx context.Context, tx *sqlx.Tx, params *majorEntity.Major) (err error) {
+	queries := `UPDATE major SET deleted_at = NOW() WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.ID)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.ID)
+	if err != nil {
+		return err
+	}
+	return
+}

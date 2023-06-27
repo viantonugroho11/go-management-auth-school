@@ -113,3 +113,37 @@ func (repo mpStudentRepo) Create(ctx context.Context, tx *sqlx.Tx, params *mapSt
 	}
 	return
 }
+
+func (repo mpStudentRepo) Update(ctx context.Context, tx *sqlx.Tx, params *mapStudentEntity.MappingStudentReq) (err error) {
+	// build query here
+	queries := `UPDATE mapping_student SET identity_id = ?, class_id = ?, type = ? WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.IdentityID, params.ClassID, params.Type, params.ID)
+		if err != nil {
+			return
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.ClassID, params.Type, params.ID)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (repo mpStudentRepo) Delete(ctx context.Context, tx *sqlx.Tx, params *mapStudentEntity.MappingStudentReq) (err error) {
+	// build query here
+	queries := `UPDATE mapping_student SET deleted_at = NOW() WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.ID)
+		if err != nil {
+			return
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.ID)
+	if err != nil {
+		return
+	}
+	return
+}

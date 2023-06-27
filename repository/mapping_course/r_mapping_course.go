@@ -105,3 +105,51 @@ func (repo mpCourseRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) 
 	}
 	return
 }
+
+func (repo mpCourseRepo) Update(ctx context.Context, tx *sqlx.Tx, params *mpCourseEntity.MappingCourseReq) (err error) {
+	
+	queries := `UPDATE ` + mpCourseEntity.Table + ` SET class_id = ?, teacher_id = ?, lesson_id = ? WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries,
+			params.ClassID,
+			params.TeacherID,
+			params.LessonID,
+			params.ID,
+		)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries,
+		params.ClassID,
+		params.TeacherID,
+		params.LessonID,
+		params.ID,
+	)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (repo mpCourseRepo) Delete(ctx context.Context, tx *sqlx.Tx, params *mpCourseEntity.MappingCourseReq) (err error) {
+	
+	queries := `UPDATE ` + mpCourseEntity.Table + ` SET deleted_at = NOW() WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries,
+			params.ID,
+		)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries,
+		params.ID,
+	)
+	if err != nil {
+		return err
+	}
+	return
+}

@@ -92,3 +92,39 @@ func (repo classRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 	}
 	return
 }
+
+// delete
+func (repo classRepo) Delete(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error) {
+	// build query here
+	queries := `UPDATE ` + classEntity.Table + ` SET deleted_at = NOW() WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.ID)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.ID)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+// update
+func (repo classRepo) Update(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error) {
+	// build query here
+	queries := `UPDATE ` + classEntity.Table + ` SET name = ?, major_id = ?, level = ? WHERE id = ?`
+	if tx == nil {
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.Name, params.MajorID, params.Level, params.ID)
+		if err != nil {
+			return err
+		}
+		return
+	}
+	_, err = tx.ExecContext(ctx, queries, params.Name, params.MajorID, params.Level, params.ID)
+	if err != nil {
+		return err
+	}
+	return
+}
