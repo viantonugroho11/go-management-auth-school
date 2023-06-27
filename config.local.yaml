@@ -23,30 +23,30 @@ authClient:
 
 # postgres database local
 mysql:
-  maxOpenConnections: 8
-  maxIdleConnections: 4
-  master:
-    host: localhost
-    port: 3306
-    database: management_auth_db
-    username: root
-    password: 
-  slave:
-    host: localhost
-    port: 3306
-    database: management_auth_db
-    username: root
-    password: 
-
+  # maxOpenConnections: 8
+  # maxIdleConnections: 4
   # master:
-  #   host: 85.10.205.173
+  #   host: localhost
   #   port: 3306
-  #   database: managementauthdb
-  #   username: viantoauth
-  #   password: Vianto00123
+  #   database: management_auth_db
+  #   username: root
+  #   password: 
   # slave:
-  #   host: 85.10.205.173
+  #   host: localhost
   #   port: 3306
-  #   database: managementauthdb
-  #   username: viantoauth
-  #   password: Vianto00123
+  #   database: management_auth_db
+  #   username: root
+  #   password: 
+
+  master:
+    host: 85.10.205.173
+    port: 3306
+    database: managementauthdb
+    username: viantoauth
+    password: Vianto00123
+  slave:
+    host: 85.10.205.173
+    port: 3306
+    database: managementauthdb
+    username: viantoauth
+    password: Vianto00123
