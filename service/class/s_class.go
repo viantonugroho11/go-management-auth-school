@@ -14,8 +14,8 @@ type ClassRepo interface {
 	FindOne(ctx context.Context, params *classController.ClassParams) (data classEntity.Class, err error)
 	Create(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error)
 	CreateTx(ctx context.Context) (tx *sqlx.Tx, err error)
-	Update(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error)
-	Delete(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error)
+	Update(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class, id int) (err error)
+	Delete(ctx context.Context, tx *sqlx.Tx, id int) (err error)
 }
 
 type classService struct {
@@ -64,13 +64,13 @@ func (service classService) Create(ctx context.Context, params *classEntity.Clas
 	return
 }
 
-func (service classService) Update(ctx context.Context, params *classEntity.Class) (err error) {
+func (service classService) Update(ctx context.Context, params *classEntity.Class, id int) (err error) {
 	tx, err := service.classRepo.CreateTx(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = service.classRepo.Update(ctx, tx, params)
+	err = service.classRepo.Update(ctx, tx, params, id)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -80,13 +80,13 @@ func (service classService) Update(ctx context.Context, params *classEntity.Clas
 	return
 }
 
-func (service classService) Delete(ctx context.Context, params *classEntity.Class) (err error) {
+func (service classService) Delete(ctx context.Context, id int) (err error) {
 	tx, err := service.classRepo.CreateTx(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = service.classRepo.Delete(ctx, tx, params)
+	err = service.classRepo.Delete(ctx, tx, id)
 	if err != nil {
 		tx.Rollback()
 		return err

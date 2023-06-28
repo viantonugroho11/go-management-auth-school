@@ -16,8 +16,8 @@ type ClassService interface {
 	SelectAll(ctx context.Context, parameter *ClassParams) (data []classEntity.Class, err error)
 	FindOne(ctx context.Context, params *ClassParams) (data classEntity.Class, err error)
 	Create(ctx context.Context, params *classEntity.Class) (err error)
-	Update(ctx context.Context, params *classEntity.Class) (err error)
-	Delete(ctx context.Context, params *classEntity.Class) (err error)
+	Update(ctx context.Context, params *classEntity.Class, id int) (err error)
+	Delete(ctx context.Context, id int) (err error)
 }
 
 type classController struct {
@@ -109,12 +109,17 @@ func (ctrl classController) Update() echo.HandlerFunc {
 			ctx = context.Background()
 		}
 		reqData := new(ClassRequest)
+		if err = c.Bind(reqData); err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
+
+		if err = reqData.Validate(); err != nil {
+			return response.RespondError(c, http.StatusBadRequest, err)
+		}
 		// string to int
 		id, err := strconv.Atoi(c.Param("id"))
-		reqData.ToService().ID = id
-
 		params := reqData.ToService()
-		err = ctrl.classService.Update(ctx, params)
+		err = ctrl.classService.Update(ctx, params, id)
 		if err != nil {
 			return response.RespondError(c, http.StatusInternalServerError, err)
 		}
@@ -129,17 +134,9 @@ func (ctrl classController) Delete() echo.HandlerFunc {
 		if ctx == nil {
 			ctx = context.Background()
 		}
-		reqData := new(ClassRequest)
-		if err = c.Bind(reqData); err != nil {
-			return response.RespondError(c, http.StatusBadRequest, err)
-		}
+		id, err := strconv.Atoi(c.Param("id"))
 
-		if err = reqData.Validate(); err != nil {
-			return response.RespondError(c, http.StatusBadRequest, err)
-		}
-
-		params := reqData.ToService()
-		err = ctrl.classService.Delete(ctx, params)
+		err = ctrl.classService.Delete(ctx, id)
 		if err != nil {
 			return response.RespondError(c, http.StatusInternalServerError, err)
 		}

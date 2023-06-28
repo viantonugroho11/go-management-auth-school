@@ -94,17 +94,17 @@ func (repo classRepo) CreateTx(ctx context.Context) (tx *sqlx.Tx, err error) {
 }
 
 // delete
-func (repo classRepo) Delete(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error) {
+func (repo classRepo) Delete(ctx context.Context, tx *sqlx.Tx, id int) (err error) {
 	// build query here
 	queries := `UPDATE ` + classEntity.Table + ` SET deleted_at = NOW() WHERE id = ?`
 	if tx == nil {
-		_, err = repo.DbMaster.ExecContext(ctx, queries, params.ID)
+		_, err = repo.DbMaster.ExecContext(ctx, queries, id)
 		if err != nil {
 			return err
 		}
 		return
 	}
-	_, err = tx.ExecContext(ctx, queries, params.ID)
+	_, err = tx.ExecContext(ctx, queries, id)
 	if err != nil {
 		return err
 	}
@@ -112,17 +112,18 @@ func (repo classRepo) Delete(ctx context.Context, tx *sqlx.Tx, params *classEnti
 }
 
 // update
-func (repo classRepo) Update(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class) (err error) {
+func (repo classRepo) Update(ctx context.Context, tx *sqlx.Tx, params *classEntity.Class, id int) (err error) {
 	// build query here
 	queries := `UPDATE ` + classEntity.Table + ` SET name = ?, major_id = ?, level = ? WHERE id = ?`
 	if tx == nil {
-		_, err = repo.DbMaster.ExecContext(ctx, queries, params.Name, params.MajorID, params.Level, params.ID)
+		_, err = repo.DbMaster.ExecContext(ctx, queries, params.Name, params.MajorID, params.Level, id)
 		if err != nil {
 			return err
 		}
 		return
 	}
-	_, err = tx.ExecContext(ctx, queries, params.Name, params.MajorID, params.Level, params.ID)
+
+	_, err = tx.ExecContext(ctx, queries, params.Name, params.MajorID, params.Level, id)
 	if err != nil {
 		return err
 	}
